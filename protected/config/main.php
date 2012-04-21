@@ -54,9 +54,9 @@ return array(
 		// uncomment the following to use a MySQL database
 		*/
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=yii',
-			'emulatePrepare' => true,
-			'username' => 'root',
+			'connectionString' => 'mysql:host=192.168.1.223;dbname=sgu_journal',
+			//'emulatePrepare' => true,
+			'username' => 'admin',
 			'password' => '',
 			'charset' => 'utf8',
 		),
