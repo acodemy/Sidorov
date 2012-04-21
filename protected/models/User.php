@@ -20,7 +20,7 @@
  * @property string $address
  * @property string $position
  * @property string $institution
- * @property string $departament
+ * @property string $department
  * @property string $may_reviewer
  *
  * The followings are the available model relations:
@@ -55,15 +55,15 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id, login, password, email, usertype_id, first_name, last_name, country, city, degree, phone, position, institution, departament, may_reviewer', 'required'),
+			array('id, login, password, email, usertype_id, first_name, last_name, country, city, degree, phone, position, institution, department, may_reviewer', 'required'),
 			array('id', 'length', 'max'=>10),
 			array('login, password', 'length', 'max'=>32),
 			array('email, first_name, middle_name, last_name, country, city, degree, phone, additional_phone', 'length', 'max'=>64),
 			array('usertype_id, may_reviewer', 'length', 'max'=>1),
-			array('address, position, institution, departament', 'length', 'max'=>256),
+			array('address, position, institution, department', 'length', 'max'=>256),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, login, password, email, usertype_id, first_name, middle_name, last_name, country, city, degree, phone, additional_phone, address, position, institution, departament, may_reviewer', 'safe', 'on'=>'search'),
+			array('id, login, password, email, usertype_id, first_name, middle_name, last_name, country, city, degree, phone, additional_phone, address, position, institution, department, may_reviewer', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,7 +102,7 @@ class User extends CActiveRecord
 			'address' => 'Address',
 			'position' => 'Position',
 			'institution' => 'Institution',
-			'departament' => 'Departament',
+			'department' => 'department',
 			'may_reviewer' => 'May Reviewer',
 		);
 	}
@@ -134,7 +134,7 @@ class User extends CActiveRecord
 		$criteria->compare('address',$this->address,true);
 		$criteria->compare('position',$this->position,true);
 		$criteria->compare('institution',$this->institution,true);
-		$criteria->compare('departament',$this->departament,true);
+		$criteria->compare('department',$this->department,true);
 		$criteria->compare('may_reviewer',$this->may_reviewer,true);
 
 		return new CActiveDataProvider($this, array(
