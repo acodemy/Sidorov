@@ -1,4 +1,5 @@
 <?php
+echo 'yвафывфывф';
 /**
  * Created by JetBrains PhpStorm.
  * User: Денис
