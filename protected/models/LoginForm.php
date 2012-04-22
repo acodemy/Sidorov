@@ -18,6 +18,7 @@ class LoginForm extends CFormModel
 	 * The rules state that username and password are required,
 	 * and password needs to be authenticated.
 	 */
+
 	public function rules()
 	{
 		return array(
@@ -60,6 +61,8 @@ class LoginForm extends CFormModel
 	 */
 	public function login()
 	{
+       // $aa = Yii::app()->db->CreateCommand('Select * FROM users');
+       // $aa->query();
 		if($this->_identity===null)
 		{
 			$this->_identity=new UserIdentity($this->username,$this->password);
