@@ -5,7 +5,9 @@ class SiteController extends Controller
 	/**
 	 * Declares class-based actions.
 	 */
-	public function actions()
+
+
+    public function actions()
 	{
 		return array(
 			// captcha action renders the CAPTCHA image displayed on the contact page
@@ -51,27 +53,56 @@ class SiteController extends Controller
 	 */
 	public function actionContact()
 	{
+
 		$model=new ContactForm;
 		if(isset($_POST['ContactForm']))
 		{
 			$model->attributes=$_POST['ContactForm'];
 			if($model->validate())
 			{
-				$headers="From: {$model->email}\r\nReply-To: {$model->email}";
+
+                $headers="From: {$model->email}\r\nReply-To: {$model->email}";
 				mail(Yii::app()->params['adminEmail'],$model->subject,$model->body,$headers);
 				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
 				$this->refresh();
 			}
 		}
 		$this->render('contact',array('model'=>$model));
+
+
 	}
+
+    /**
+     * Отображает форму регистрации
+     */
+    public function actionRegister()
+    {
+       $model=new RegForm();
+
+        if(isset($_POST['RegForm']))
+        {
+            $model->attributes=$_POST['RegForm'];
+            if($model->validate())
+            {
+                $model->register($model->attributes);
+                Yii::app()->user->setFlash('register','Спасибо за регистрацию. Мы вам отправили на почту письмо с регистрационными данными.');
+                $this->refresh();
+            } else
+            {
+                Yii::app()->user->setFlash('register','Произошла неизвестная ошибка!.');
+                $this->refresh();
+            }
+        }
+        $this->render('register',array('model'=>$model));
+    }
 
 	/**
 	 * Displays the login page
 	 */
 	public function actionLogin()
 	{
-		$model=new LoginForm;
+
+        $model=new LoginForm;
 
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
@@ -90,6 +121,7 @@ class SiteController extends Controller
 		}
 		// display the login form
 		$this->render('login',array('model'=>$model));
+
 	}
 
 	/**
@@ -100,4 +132,34 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}
+
+    public function actionCreateRoles()
+    {
+        $auth=Yii::app()->authManager;
+        $auth->clearAll();
+        $auth->CreateOperation("createArticle",'создание статьи');
+        $auth->CreateOperation("editArticle",'редкатирование статьи');
+        $auth->CreateOperation("deleteArticle",'удаление статьи статьи');
+        $auth->CreateOperation("readArticle",'просмотр статьи статьи');
+
+        $role = $auth->createRole('guest');
+
+        $role = $auth->createRole('author');
+        $role->addChild('guest');
+        $role->addChild('createArticle');
+        $role->addChild('editArticle');
+        $role->addChild('deleteArticle');
+        $role->addChild('readArticle');
+
+        $role = $auth->createRole('secretary');
+        $role->addChild('author');
+
+        $role = $auth->createRole('chief');
+        $role->addChild('secretary');
+        $role->addChild('editArticle');
+        $auth->assign('author', 10);
+
+
+
+    }
 }

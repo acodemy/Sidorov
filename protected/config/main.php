@@ -33,9 +33,12 @@ return array(
 	// application components
 	'components'=>array(
 		'user'=>array(
+            'class' => 'WebUser',
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
 		),
+
+
 		// uncomment the following to enable URLs in path-format
 		/*
 		'urlManager'=>array(
@@ -54,17 +57,23 @@ return array(
 		// uncomment the following to use a MySQL database
 		*/
 		'db'=>array(
-			'connectionString' => 'mysql:host=192.168.1.223;dbname=sgu_journal',
+            'class'=>'CDbConnection',
+            'connectionString' => 'mysql:host=192.168.1.223;dbname=sgu_journal',
 			//'emulatePrepare' => true,
 			'username' => 'admin',
 			'password' => '',
 			'charset' => 'utf8',
 		),
+         'authManager'=>array(
+            'class'=>'CDbAuthManager',
+            'connectionID'=>'db',
+        ),
 
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
         ),
+
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
@@ -80,7 +89,7 @@ return array(
 				*/
 			),
 		),
-	),
+    ),
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
