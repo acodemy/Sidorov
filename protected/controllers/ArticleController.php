@@ -4,10 +4,13 @@ class ArticleController extends Controller
 {
 	public function actionIndex()
 	{
-		$this->render('index');
-        $this->addArticle();
-
+        // Тут должна быть менюшка со списком действий, применительно к статье
 	}
+
+    public function actionSubmit () {
+        $this->render('submit');
+        $this->addArticle();
+    }
 
     public function addArticle () {
 
