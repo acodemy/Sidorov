@@ -11,9 +11,7 @@
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-    <?php $model = new Article();
 
-    ?>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -35,29 +33,10 @@
         <?php echo $form->error($model,'section_id'); ?>
     </div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'comment'); ?>
-		<?php echo $form->textArea($model,'comment'); ?>
-		<?php echo $form->error($model,'comment'); ?>
-	</div>
-
-
-
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Submit'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
-
-    <?php
-        /*$form=$this->beginWidget('CActiveForm', array(
-               'id'=>'article-index-form',
-        'enableAjaxValidation'=>false,
-        'htmlOptions' => array('enctype' => 'multipart/form-data'),
-        ));
-        echo CHtml::activeFileField($model, 'image');
-        $this->endWidget(); */
-    ?>
 
 </div><!-- form -->
