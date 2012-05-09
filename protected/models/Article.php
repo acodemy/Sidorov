@@ -112,4 +112,6 @@ class Article extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
 }

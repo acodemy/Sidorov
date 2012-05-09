@@ -1,7 +1,19 @@
+<?php
+if(Yii::app()->user->hasFlash('contact')):
+    ?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('contact'); ?>
+</div>
+<?php else:
+    ?>
+
 <div class="form">
 
 
-    <?php $form=$this->beginWidget('CActiveForm', array(
+    <?php
+
+    $form=$this->beginWidget('CActiveForm', array(
                                                        'id'=>'coauthors-add-form',
                                                        'enableAjaxValidation'=>false,
                                                   )); ?>
@@ -54,3 +66,4 @@
     ?>
 
 </div><!-- form -->
+<?php endif; ?>
