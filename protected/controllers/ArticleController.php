@@ -74,18 +74,13 @@ class ArticleController extends Controller
         $article = new Article();
         $model = array();
         $criteria=new CDbCriteria;
-        $criteria->select='title';
+        $criteria->select='id';
+        $criteria->condition='user_id=:userID and status=:statusID';
         foreach($this->_status as $key => $value)
         {
-            $criteria->condition='user_id=:userID and status=:statusID';
             $criteria->params=array(':userID' => (int) Yii::app()->user->id, 'statusID' => $value);
-            $post=Article::model()->findAll($criteria); // $params не требуется
-            foreach($post as $title)
-            {
-                $model[$key]++;
-            }
+            $model[$key]=Article::model()->count($criteria); // $params не требуется
             $model['user'] =  Yii::app()->user->id;
-
         }
         } else {
             Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
