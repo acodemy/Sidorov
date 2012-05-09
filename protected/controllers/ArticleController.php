@@ -154,8 +154,8 @@ class ArticleController extends Controller
         } else {
             Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
         }
-
-        $this->render('submit',array('model'=> array('Article' => $article, 'dataProvider' => $dProvider, 'id' => $this_id)));
+        $isHidden = isset($_GET['id']) ? $_GET['id'] : '-1';
+        $this->render('submit',array('model'=> array('Article' => $article, 'dataProvider' => $dProvider, 'id' => $this_id, 'needHidden' => $isHidden)));
 
     }
 
