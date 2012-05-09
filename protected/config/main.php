@@ -57,7 +57,7 @@ return array(
 		*/
 		'db'=>array(
             'class'=>'CDbConnection',
-            'connectionString' => 'mysql:host=192.168.1.223;dbname=sgu_journal',
+            'connectionString' => 'mysql:host=localhost;dbname=sgu_journal',
 			//'emulatePrepare' => true,
 			'username' => 'admin',
 			'password' => '',

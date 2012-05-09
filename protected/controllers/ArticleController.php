@@ -2,15 +2,144 @@
 
 class ArticleController extends Controller
 {
+
+
+    public $_status = array ("REJECTED" => 1, "PUBLISHED" => 2, "UNDER_REVISION"=> 3, "COAUTHORS_WAIT" => 4, "FILES_WAIT" => 5, "COMMENTS_WAIT" => 6, "CONFIRM_WAIT" => 7, "REWORK" => 8);
+
+    public static function return_name_status($i)
+    {
+        switch ($i) {
+            case 1:
+                return "submit";
+                break;
+            case 2:
+                return "submit";
+                break;
+            case 3:
+                return "submit";
+                break;
+            case 4:
+                return "addcoauthors";
+                break;
+            case 5:
+                return "addfiles";
+                break;
+            case 6:
+                return "addcomment";
+                break;
+            case 7:
+                return "confirm";
+                break;
+            case 8:
+                return "submit";
+                break;
+        }
+
+    }
+
+    public static function get_name_status($i)
+    {
+    switch ($i) {
+    case 1:
+        echo "Отклоненные";
+        break;
+    case 2:
+        echo "Опубликованные";
+        break;
+    case 3:
+        echo "Ожидающие рецензию";
+        break;
+    case 4:
+        echo "С недобавленными авторами";
+        break;
+    case 5:
+        echo "Ожидающие добавления файлов";
+        break;
+    case 6:
+        echo "Ожидаюющие камментария";
+        break;
+    case 7:
+        echo "Ожидаюющие отправки";
+        break;
+    case 8:
+        echo "На доработке";
+        break;
+    }
+    }
 	public function actionIndex()
 	{
+        if(!Yii::app()->user->isGuest)
+        {
         // Тут должна быть менюшка со списком действий, применительно к статье
+        $article = new Article();
+        $model = array();
+        $criteria=new CDbCriteria;
+        $criteria->select='title';
+        foreach($this->_status as $key => $value)
+        {
+            $criteria->condition='user_id=:userID and status=:statusID';
+            $criteria->params=array(':userID' => (int) Yii::app()->user->id, 'statusID' => $value);
+            $post=Article::model()->findAll($criteria); // $params не требуется
+            foreach($post as $title)
+            {
+                $model[$key]++;
+            }
+            $model['user'] =  Yii::app()->user->id;
+
+        }
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
+       $this->render('index',array('model'=>$model));
+
 	}
 
-    public function actionSubmit () {
+
+    public function actionBrowsing()
+    {
+        if(Yii::app()->user->checkAccess('seeForArticle', array('user' => $_GET['user_id'])))
+        {
         $article = new Article();
+        $model = array("user" => (int) $_GET['user_id'], "status" => (int) $_GET['status_id']);
+        $model['dataProvider'] = new CActiveDataProvider('Article', array(
+            'criteria'=>array(
+                'condition'=>'user_id =:User AND status =:Status',
+                'params'=>array(':User' => $model['user'], ':Status' => $model['status'])
+            ),
+        ));
+
+       /* $criteria=new CDbCriteria();
+        $criteria->condition='user_id=:userID and status=:statusID';
+        $criteria->params=array(':userID' => (int) $_GET['user_id'], 'statusID' => (int) $_GET['status_id']);
+        $post=Article::model()->findAll($criteria); // $params не требуется
+        foreach($post as $title)
+            {
+             $model[] = $title;
+            }
+
+        */
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
+        $this->render('browsing',array('model'=>$model));
+    }
+
+
+
+    public function actionSubmit () {
+        if(Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
+        {
+
+        $article = new Article();
+
         if (isset($_POST['Article'])) {
+            if(isset($_POST['Article']['id']))
+            {
+                $article=Article::model()->findByPk($_POST['Article']['id']);
+            }
+
             $article->attributes=$_POST['Article'];
+
             if($article->validate()) {
                 $article->user_id = Yii::app()->user->id;
                 $article->save();
@@ -18,10 +147,29 @@ class ArticleController extends Controller
                 $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
             }
         }
-        $this->render('submit',array('model'=> $article));
+
+        $this_id = isset($_GET['id']) ? $_GET['id'] : -1;
+
+        $dProvider = new CActiveDataProvider('Article', array(
+            'criteria'=>array(
+                'condition'=>'user_id =:User AND id =:id',
+                'params'=>array(':User' => Yii::app()->user->id, ':id' => $this_id)
+            ),
+        ));
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
+
+        $this->render('submit',array('model'=> array('Article' => $article, 'dataProvider' => $dProvider, 'id' => $this_id)));
+
     }
 
+
+
     public function actionAddCoauthors () {
+        if(isset($_GET['id']) & Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
+        {
+
         $article = new Article();
 
         $coauthor = new Coauthor();
@@ -35,7 +183,11 @@ class ArticleController extends Controller
                $this->redirect($this->createUrl('article/addcoauthors', array('id' => (int)$_GET['id'])));
            }
        }
-       $this->render('addcoauthors',array('model'=> $article));
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
+
+       $this->render('addcoauthors',array('model'=>'Article'));
 
     }
 
@@ -43,6 +195,9 @@ class ArticleController extends Controller
         /**
          * Создание объекта статьи, с которой происходит работа
          */
+        if(isset($_GET['id']) & Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
+        {
+
         $article = Article::model()->findByPk($_GET['id']);
 
         /**
@@ -77,6 +232,9 @@ class ArticleController extends Controller
                $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
             }
        }
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
        $this->render('addfiles',array('model'=> $article));
     }
 
@@ -84,6 +242,8 @@ class ArticleController extends Controller
         /**
          * Создание объекта статьи, с которой происходит работа
          */
+        if(isset($_GET['id']) & Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
+        {
         $article = Article::model()->findByPk($_GET['id']);
 
         /**
@@ -105,7 +265,9 @@ class ArticleController extends Controller
                 $this->redirect($this->createUrl('article/confirm', array('id' => (int)$_GET['id'])));
             }
         }
-
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
         $this->render('addcomment',array('model'=> $article));
     }
 
@@ -113,6 +275,8 @@ class ArticleController extends Controller
         /**
          * Создание объекта статьи, с которой происходит работа
          */
+        if(isset($_GET['id']) & Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
+        {
         $article = Article::model()->findByPk($_GET['id']);
 
         /**
@@ -128,7 +292,9 @@ class ArticleController extends Controller
             $article->save();
             $this->redirect($this->createUrl('site/index', array('id' => (int)$_GET['id'])));
         }
-
+        } else {
+            Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
+        }
         $this->render('confirm',array('model'=> $article));
 
     }
