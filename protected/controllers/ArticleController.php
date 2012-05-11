@@ -4,7 +4,7 @@ class ArticleController extends Controller
 {
 
 
-    public $_status = array ("REJECTED" => 1, "PUBLISHED" => 2, "UNDER_REVISION"=> 3, "COAUTHORS_WAIT" => 4, "FILES_WAIT" => 5, "COMMENTS_WAIT" => 6, "CONFIRM_WAIT" => 7, "REWORK" => 8);
+    // Перенёс статусы в модель
 
     public static function return_name_status($i)
     {
@@ -122,35 +122,33 @@ class ArticleController extends Controller
 
 
     public function actionSubmit () {
-        if(Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id)))
-        {
+        if(Yii::app()->user->checkAccess('changeArticle', array('article_id' => isset($_GET['id']) ? $_GET['id'] : Yii::app()->user->id))) {
+            $article = new Article();
 
-        $article = new Article();
+            if (isset($_POST['Article'])) {
+                if(isset($_POST['Article']['id']))
+                {
+                    $article=Article::model()->findByPk($_POST['Article']['id']);
+                }
 
-        if (isset($_POST['Article'])) {
-            if(isset($_POST['Article']['id']))
-            {
-                $article=Article::model()->findByPk($_POST['Article']['id']);
+                $article->attributes=$_POST['Article'];
+
+                if($article->validate()) {
+                    $article->user_id = Yii::app()->user->id;
+                    $article->save();
+
+                    $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
+                }
             }
 
-            $article->attributes=$_POST['Article'];
+            $this_id = isset($_GET['id']) ? $_GET['id'] : -1;
 
-            if($article->validate()) {
-                $article->user_id = Yii::app()->user->id;
-                $article->save();
-
-                $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
-            }
-        }
-
-        $this_id = isset($_GET['id']) ? $_GET['id'] : -1;
-
-        $dProvider = new CActiveDataProvider('Article', array(
-            'criteria'=>array(
-                'condition'=>'user_id =:User AND id =:id',
-                'params'=>array(':User' => Yii::app()->user->id, ':id' => $this_id)
-            ),
-        ));
+            $dProvider = new CActiveDataProvider('Article', array(
+                'criteria'=>array(
+                    'condition'=>'user_id =:User AND id =:id',
+                    'params'=>array(':User' => Yii::app()->user->id, ':id' => $this_id)
+                ),
+            ));
         } else {
             Yii::app()->user->setFlash('contact','У вас нет доступа к данным.');
         }

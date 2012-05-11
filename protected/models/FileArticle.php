@@ -39,14 +39,14 @@ class FileArticle extends CActiveRecord
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		return array(
+		/*return array(
 			array('filename, title, article_id', 'required'),
 			array('filename, title', 'length', 'max'=>64),
 			array('article_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, filename, title, article_id', 'safe', 'on'=>'search'),
-		);
+		);*/
 	}
 
 	/**

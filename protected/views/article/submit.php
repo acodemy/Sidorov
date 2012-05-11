@@ -49,7 +49,7 @@ if(Yii::app()->user->hasFlash('contact')):
     </div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Submit'); ?>
+		<?php echo CHtml::submitButton('Далее'); ?>
 	</div>
 
 <?php $this->endWidget();

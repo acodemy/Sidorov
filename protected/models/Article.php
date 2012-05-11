@@ -20,6 +20,15 @@
  */
 class Article extends CActiveRecord
 {
+    const REJECTED = 1;
+    const PUBLISHED = 2;
+    const UNDER_REVISION = 3;
+    const COAUTHORS_WAIT = 4;
+    const FILES_WAIT = 5;
+    const COMMENTS_WAIT = 6;
+    const CONFIRM_WAIT = 7;
+    const REWORK = 8;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -47,8 +56,7 @@ class Article extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('title, description, section_id', 'required'),
-			array('title', 'length', 'max'=>255),
-			array('status', 'length', 'max'=>1),
+			array('title', 'length', 'max' => 255),
 			array('comment', 'safe'),
 		);
 	}
@@ -75,8 +83,8 @@ class Article extends CActiveRecord
 	{
 		return array(
 			'title' => 'Название статьи',
-			'description' => 'Описание',
-			'comment' => 'Комментарий',
+			'description' => 'Описание статьи',
+			'comment' => 'Ваш комментарий',
 			'section_id' => 'Раздел',
 		);
 	}
