@@ -8,7 +8,7 @@
  * @property string $title
  * @property string $description
  * @property string $comment
- * @property string $status
+ * @property integer $status
  * @property string $user_id
  * @property string $section_id
  *
@@ -20,6 +20,18 @@
  */
 class Article extends CActiveRecord
 {
+    /**
+     * Статусы статьи
+     */
+    const REJECTED = 1;
+    const PUBLISHED = 2;
+    const UNDER_REVISION = 3;
+    const COAUTHORS_WAIT = 4;
+    const FILES_WAIT = 5;
+    const COMMENTS_WAIT = 6;
+    const CONFIRM_WAIT = 7;
+    const REWORK = 8;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -87,6 +99,15 @@ class Article extends CActiveRecord
      */
     public function hasFiles () {
         return (bool) FileArticle::model()->countByAttributes(array('article_id' => $this->id));
+    }
+
+    /**
+     * Получение пути к папке с файлами для текущей статьи.
+     * Имя папки генерируется по специальному алгоритму
+     * @return string
+     */
+    public function getDirectory () {
+        return dirname($_SERVER['SCRIPT_FILENAME']) . '/files/' . substr(md5($this->id), 0, 8) . '/';
     }
 
 	/**

@@ -9,34 +9,40 @@ class ArticleController extends Controller
 
     public function actionSubmit () {
         $article = new Article();
+
         if (isset($_POST['Article'])) {
-            $article->attributes=$_POST['Article'];
+            $article->attributes = $_POST['Article'];
+
             if($article->validate()) {
                 $article->user_id = Yii::app()->user->id;
+                $article->status = Article::COAUTHORS_WAIT;
+
                 $article->save();
 
                 $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
             }
         }
-        $this->render('submit',array('model'=> $article));
+
+        $this->render('submit', array('model' => $article));
     }
 
     public function actionAddCoauthors () {
-        $article = new Article();
-
+        $article = Article::model()->findByPk($_GET['id']);
         $coauthor = new Coauthor();
+
         if (isset($_POST['Coauthor'])) {
-           $coauthor->attributes = $_POST['Coauthor'];
-           if($coauthor->validate()) {
-               $coauthor->article_id = $_GET['id'];//$article->id;
+            $coauthor->attributes = $_POST['Coauthor'];
 
-               $coauthor->save();
+            if($coauthor->validate()) {
+                $coauthor->article_id = $article->id;
 
-               $this->redirect($this->createUrl('article/addcoauthors', array('id' => (int)$_GET['id'])));
-           }
-       }
-       $this->render('addcoauthors',array('model'=> $article));
+                $coauthor->save();
 
+                $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
+            }
+        }
+
+        $this->render('addcoauthors', array('model' => $coauthor, 'id' => $article->id));
     }
 
     public function actionAddFiles () {
@@ -49,35 +55,34 @@ class ArticleController extends Controller
          * Если при переходе на страницу добавления файлов
          * статус статьи COAUTHORS_WAIT, то меняем его на FILES_WAIT
          */
-        if ((int)$article->status === 4) {
-            $article->status = 5;
+        if ((int)$article->status === Article::COAUTHORS_WAIT) {
+            $article->status = Article::FILES_WAIT;
             $article->save();
         }
 
         $file = new FileArticle();
         if (!empty($_FILES)) {
-            if (!empty($_FILES)) {
-                $tempFile = $_FILES['file']['tmp_name'];
-                $md5 = substr(md5($article->title), 0, 8);
-                $targetPath = "files/{$md5}/";
-                if (!is_dir($targetPath)) {
-                    mkdir($targetPath);
-                }
-                $upload = new Upload(str_replace('//', '/', $targetPath));
-                if ($upload->uploads($_FILES['file'])) {
-                    $fileInfo = $upload->getFilesInfo();
-                }
+            $filesPath = $article->getDirectory();
+            if (!is_dir($filesPath)) {
+                mkdir($filesPath);
             }
-            $file->title = $fileInfo['name'];
-            $file->filename = $fileInfo['nameTranslit'];
-            $file->article_id = $article->id;
-            if($file->validate()) {
-               $file->save();
 
-               $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
+            $upload = new Upload(str_replace('//', '/', $filesPath));
+            if ($upload->uploads($_FILES['file'])) {
+                $fileInfo = $upload->getFilesInfo();
+                $file->title = $fileInfo['name'];
+                $file->filename = $fileInfo['nameTranslit'];
+                $file->article_id = $article->id;
+
+                if($file->validate()) {
+                    $file->save();
+
+                    $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
+                }
             }
-       }
-       $this->render('addfiles',array('model'=> $article));
+        }
+
+        $this->render('addfiles',array('model' => $file, 'id' => $article->id));
     }
 
     public function actionAddComment () {
@@ -91,22 +96,24 @@ class ArticleController extends Controller
          * иначе переход к добавлению файлов
          */
         if ($article->hasFiles()) {
-            $article->status = 6;
+            $article->status = Article::COMMENTS_WAIT;
             $article->save();
         } else {
-            $this->redirect($this->createUrl('article/addfiles', array('id' => (int)$_GET['id'])));
+            $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
         }
 
         if (isset($_POST['Article'])) {
             $article->comment = $_POST['Article']['comment'];
+
             if($article->validate()) {
-                $article->status = 7;
+                $article->status = Article::CONFIRM_WAIT;
                 $article->save();
-                $this->redirect($this->createUrl('article/confirm', array('id' => (int)$_GET['id'])));
+
+                $this->redirect($this->createUrl('article/confirm', array('id' => $article->id)));
             }
         }
 
-        $this->render('addcomment',array('model'=> $article));
+        $this->render('addcomment', array('model' => $article));
     }
 
     public function actionConfirm () {
@@ -118,19 +125,18 @@ class ArticleController extends Controller
         /**
          * Простая проверка на доступ
          */
-        if ((int)$article->status < 6) {
-            $this->redirect($this->createUrl('/index', array('id' => (int)$_GET['id'])));
+        if ((int)$article->status < Article::COMMENTS_WAIT) {
+            $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
         }
 
-        if (isset($_POST['yt0'])) {
-
-            $article->status = 3;
+        if (isset($_POST['submit'])) {
+            $article->status = Article::UNDER_REVISION;
             $article->save();
-            $this->redirect($this->createUrl('site/index', array('id' => (int)$_GET['id'])));
+
+            $this->redirect($this->createUrl('site/index', array('id' => $article->id)));
         }
 
-        $this->render('confirm',array('model'=> $article));
-
+        $this->render('confirm', array('model' => $article));
     }
 
 	// Uncomment the following methods and override them if needed

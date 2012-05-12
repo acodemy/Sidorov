@@ -43,10 +43,7 @@ class Coauthor extends CActiveRecord
 		return array(
 			array('first_name, last_name', 'required'),
 			array('first_name, middle_name, last_name', 'length', 'max'=>64),
-			array('article_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, first_name, middle_name, last_name, article_id', 'safe', 'on'=>'search'),
+			//array('id, first_name, middle_name, last_name, article_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -68,11 +65,9 @@ class Coauthor extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'first_name' => 'First Name',
-			'middle_name' => 'Middle Name',
-			'last_name' => 'Last Name',
-			'article_id' => 'Article',
+			'first_name' => 'Имя',
+			'middle_name' => 'Отчество',
+			'last_name' => 'Фамилия',
 		);
 	}
 

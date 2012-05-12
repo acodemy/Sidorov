@@ -1,17 +1,10 @@
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'article-index-form',
-	'enableAjaxValidation'=>false,
-    'htmlOptions' => array('name' => 'addArticleForm'),
+	'enableAjaxValidation' => false,
 )); ?>
 
-
-
-
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-
+<p class="note">Поля, отмеченные звёздочкой <span class="required">*</span> являются обязательными.</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -34,7 +27,7 @@
     </div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Submit'); ?>
+		<?php echo CHtml::submitButton('Добавить статью и перейти к следующему шагу'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

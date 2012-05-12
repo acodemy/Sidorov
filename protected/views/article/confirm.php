@@ -1,20 +1,15 @@
 <div class='form'>
 
     <?php $form=$this->beginWidget('CActiveForm', array(
-                                                       'id'=>'file-article-submit-form',
-                                                       'enableAjaxValidation'=>false,
-                                                  )); ?>
-
-    <p class="note">Fields with <span class="required">*</span> are required.</p>
+        'enableAjaxValidation' => false,
+    )); ?>
 
     <?php
-    $model = new Article();
-
     echo $form->errorSummary($model); ?>
 
 
     <div class="row buttons">
-        <?php echo CHtml::submitButton('Отправить статью'); ?>
+        <?php echo CHtml::submitButton('Отправить статью', array('name' => 'submit')); ?>
     </div>
 
     <?php $this->endWidget(); ?>

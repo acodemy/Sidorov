@@ -14,7 +14,9 @@
  */
 class FileArticle extends CActiveRecord
 {
-	/**
+	private $_directory;
+
+    /**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
 	 * @return FileArticle the static model class
@@ -40,12 +42,9 @@ class FileArticle extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('filename, title, article_id', 'required'),
-			array('filename, title', 'length', 'max'=>64),
-			array('article_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, filename, title, article_id', 'safe', 'on'=>'search'),
+			//array('id, filename, title, article_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -67,12 +66,20 @@ class FileArticle extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'filename' => 'Filename',
-			'title' => 'Title',
-			'article_id' => 'Article',
+			'filename' => 'Имя файла',
+			'title' => 'Название',
 		);
 	}
+
+    public function beforeDelete () {
+        parent::beforeDelete();
+        $filename = Article::model()->findByPk($this->article_id)->getDirectory() . $this->filename;
+
+        if(!unlink($filename))
+            return false;
+        else
+            return true;
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
