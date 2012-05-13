@@ -140,7 +140,15 @@ class SiteController extends Controller
         $auth->CreateOperation("createArticle",'создание статьи');
         $auth->CreateOperation("editArticle",'редкатирование статьи');
         $auth->CreateOperation("deleteArticle",'удаление статьи статьи');
-        $auth->CreateOperation("readArticle",'просмотр статьи статьи');
+        $auth->CreateOperation("useArticle",'манипуляции со статьиями');
+
+        $bizRule='return Yii::app()->user->id == $params["user"];';
+        $task = $auth->createTask('seeForArticle', 'просмотреть свои статьи', $bizRule);
+        $task->addChild('useArticle');
+
+        $bizRule='return Article::model()->findByPK($params["article_id"])->user_id == Yii::app()->user->id; ';
+        $task = $auth->createTask('changeArticle', 'изменять/добавлять статьи', $bizRule);
+        $task->addChild('useArticle');
 
         $role = $auth->createRole('guest');
 
@@ -149,7 +157,9 @@ class SiteController extends Controller
         $role->addChild('createArticle');
         $role->addChild('editArticle');
         $role->addChild('deleteArticle');
-        $role->addChild('readArticle');
+        $role->addChild('useArticle');
+        $role->addChild('seeForArticle');
+        $role->addChild('changeArticle');
 
         $role = $auth->createRole('secretary');
         $role->addChild('author');

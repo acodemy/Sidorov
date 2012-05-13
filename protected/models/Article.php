@@ -133,4 +133,101 @@ class Article extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+    public function getStatusArray () {
+        return array('REJECTED' => 1, 'PUBLISHED' => 2, 'UNDER_REVISION' => 3, 'COAUTHORS_WAIT' => 4,
+                           'FILES_WAIT' => 5, 'COMMENTS_WAIT' => 6, 'CONFIRM_WAIT' => 7,'REWORK' => 8);
+    }
+
+    public static function getNameStatus($i) {
+        switch ($i) {
+            case 1:
+                echo "Отклоненные";
+                break;
+            case 2:
+                echo "Опубликованные";
+                break;
+            case 3:
+                echo "Ожидающие рецензию";
+                break;
+            case 4:
+                echo "С недобавленными авторами";
+                break;
+            case 5:
+                echo "Ожидающие добавления файлов";
+                break;
+            case 6:
+                echo "Ожидаюющие камментария";
+                break;
+            case 7:
+                echo "Ожидаюющие отправки";
+                break;
+            case 8:
+                echo "На доработке";
+                break;
+        }
+    }
+        public static function returnNameStatus($i)
+        {
+            switch ($i) {
+                case 1:
+                    return "submit";
+                    break;
+                case 2:
+                    return "submit";
+                    break;
+                case 3:
+                    return "submit";
+                    break;
+                case 4:
+                    return "addcoauthors";
+                    break;
+                case 5:
+                    return "addfiles";
+                    break;
+                case 6:
+                    return "addcomment";
+                    break;
+                case 7:
+                    return "confirm";
+                    break;
+                case 8:
+                    return "submit";
+                    break;
+            }
+
+        }
+
+    public static function getStatusAuthor($i) {
+        switch ($i) {
+            case 3:
+                return "Изменить основные данные";
+                break;
+            case 4:
+                return "Добавить/изменить авторов";
+                break;
+            case 5:
+                return "Добавить/удалить файлы к статье";
+                break;
+            case 6:
+                return "Добавить/изменить комментарий";
+                break;
+            case 7:
+                return "Отправить статью на рассмотрение";
+                break;
+        }
+    }
+
+
+    // изменяет статус статьи на этап $delta (параметр необязателен, по умолчанию переводит на 1 эта выше
+    public function statusUpdate($status, $table, $delta = null)
+    {
+        if ($table->status == $status)
+        {
+            $table->status = ($delta != null) ? $delta : ++$table->status;
+            $table->save();
+        }
+    }
+
+
 }

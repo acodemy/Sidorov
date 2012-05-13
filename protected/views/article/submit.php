@@ -1,8 +1,13 @@
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php
+    $this->widget('StatusBar', array('status' => $model['status'], 'id' => $model['id']));
+
+    $form=$this->beginWidget('CActiveForm', array(
 	'enableAjaxValidation' => false,
-)); ?>
+));
+
+    ?>
 
 <p class="note">Поля, отмеченные звёздочкой <span class="required">*</span> являются обязательными.</p>
 

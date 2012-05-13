@@ -1,3 +1,13 @@
+<?php if(Yii::app()->user->hasFlash('addcoauthors')):
+    ?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('addcoauthors'); ?>
+</div>
+<?php else:
+    $this->widget('StatusBar', array('status' => $model['status'], 'id' => $model['id']));
+    ?>
+
 <div class='form'>
 
     <?php $form=$this->beginWidget('CActiveForm', array(
@@ -16,3 +26,5 @@
 
 
 </div><!-- form -->
+
+<?php endif; ?>

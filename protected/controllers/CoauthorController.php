@@ -4,12 +4,20 @@ class CoauthorController extends Controller
 {
     public function actionDelete ($id) {
         if(Yii::app()->request->isPostRequest) {
-            $this->loadModel($id)->delete();
+            $tempCoauthor = $this->loadModel($id);
+            $article = Article::model()->findByPk($tempCoauthor->article_id);
+            if ($tempCoauthor->count('article_id='.$article->id) == 1)
+            {
+            Article::statusUpdate($article->status, $article, Article::COAUTHORS_WAIT);
+            }
+
+            $tempCoauthor->delete();
 
             // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
             if(!isset($_GET['ajax'])) {
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
             }
+
         }
         else
             throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');

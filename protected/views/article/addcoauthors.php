@@ -1,6 +1,17 @@
+<?php if(Yii::app()->user->hasFlash('addcoauthors')):
+?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('addcoauthors'); ?>
+</div>
+<?php else: ?>
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php
+
+    $this->widget('StatusBar', array('status' => $status, 'id' => $id));
+
+    $form=$this->beginWidget('CActiveForm', array(
    'enableAjaxValidation'=>false,
 )); ?>
 
@@ -66,3 +77,4 @@ $this->widget('zii.widgets.grid.CGridView', array(
 ?>
 
 </div><!-- form -->
+<?php endif; ?>
