@@ -55,7 +55,15 @@ return array(
 		),
 		// uncomment the following to use a MySQL database
 		*/
-		'db'=>array(
+		/*'db'=>array(
+            'class'=>'CDbConnection',
+            'connectionString' => 'mysql:host=localhost;dbname=sgu_journal',
+			//'emulatePrepare' => true,
+			'username' => 'root',
+			'password' => 'lollipop',
+			'charset' => 'utf8',
+		),*/
+        'db'=>array(
             'class'=>'CDbConnection',
             'connectionString' => 'mysql:host=localhost;dbname=sgu_journal',
 			//'emulatePrepare' => true,
