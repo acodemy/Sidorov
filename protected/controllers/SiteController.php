@@ -27,7 +27,31 @@ class SiteController extends Controller
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex()
+    public function actionMain()
+    {
+        if(!Yii::app()->user->isGuest)
+        {
+            // Тут должна быть менюшка со списком действий, применительно к статье
+            $model = array();
+            $criteria=new CDbCriteria;
+            $criteria->select = 'id';
+            $criteria->condition='user_id=:userID and status=:statusID';
+            $statusArray = Article::getStatusArray();
+            foreach($statusArray as $key => $value)
+            {
+                $criteria->params=array(':userID' => (int) Yii::app()->user->id, 'statusID' => $value);
+                $model[$key]=Article::model()->count($criteria); // $params не требуется
+                $model['user'] = Yii::app()->user->id;
+            }
+            $this->render('main',array('model'=>$model));
+        } else {
+            Yii::app()->user->setFlash('main','У вас нет доступа к данным.');
+            $this->render('main');
+        }
+
+    }
+
+    public function actionIndex()
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'

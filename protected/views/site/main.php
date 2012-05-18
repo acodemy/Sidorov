@@ -5,11 +5,11 @@ $this->breadcrumbs=array(
     'index',
 );
 
-if(Yii::app()->user->hasFlash('index')):
+if(Yii::app()->user->hasFlash('main')):
     ?>
 
 <div class="flash-success">
-    <?php echo Yii::app()->user->getFlash('index'); ?>
+    <?php echo Yii::app()->user->getFlash('main'); ?>
 </div>
 <?php else: ?>
 
