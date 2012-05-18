@@ -134,7 +134,7 @@ class Article extends CActiveRecord
 		));
 	}
 
-    public function getStatusArray () {
+    public static function getStatusArray () {
         return array('REJECTED' => 1, 'PUBLISHED' => 2, 'UNDER_REVISION' => 3, 'COAUTHORS_WAIT' => 4,
                            'FILES_WAIT' => 5, 'COMMENTS_WAIT' => 6, 'CONFIRM_WAIT' => 7,'REWORK' => 8);
     }
@@ -220,7 +220,7 @@ class Article extends CActiveRecord
 
 
     // изменяет статус статьи на этап $delta (параметр необязателен, по умолчанию переводит на 1 эта выше
-    public function statusUpdate($status, $table, $delta = null)
+    public static function statusUpdate($status, $table, $delta = null)
     {
         if ($table->status == $status)
         {
