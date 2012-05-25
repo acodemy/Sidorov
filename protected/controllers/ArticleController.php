@@ -195,10 +195,30 @@ class ArticleController extends Controller
         }
             */
         if (isset($_POST['submit'])) {
-            $article->status = Article::UNDER_REVISION;
-            $article->save();
+            //$article->status = Article::UNDER_REVISION;
+            //$article->save();
+            $z = $article->files;
+            $files = array();
+            foreach ($z as $a)
+                array_push($files, $a->filename);
+            print_r($files);
+            $d = $article->getDirectory();
+            //Zip::create_zip($files, $d);
 
-            $this->redirect($this->createUrl('site/index', array('id' => $article->id)));
+            $zip = new ZipArchive();
+
+            $fileName = "backup_".date('j_m_Y_h_m_s').".zip";
+            echo $fileName;
+            $zip = new ZipArchive;
+            if ($zip->open('c2reated_by_php.zip', ZipArchive::CREATE) === true){
+                $zip->addFromString('ok.txt', 'данные файла');
+                //$zip->addEmptyDir('name');
+                $zip->close();
+            }else{
+                echo 'Не могу создать архив!';
+            }
+
+            //$this->redirect($this->createUrl('site/index', array('id' => $article->id)));
         }
 
         $this->render('confirm', array('model' => $article));

@@ -149,4 +149,9 @@ class User extends CActiveRecord
     public function hashPassword ($password) {
         return md5(md5($password));
     }
+
+    public function getFullName () {
+        $mn = (!empty($this->middle_name)) ? mb_substr($this->middle_name, 0, 2) . '.' : '';
+        return $this->last_name . ' ' . mb_substr($this->first_name, 0, 2) . '. ' . $mn;
+    }
 }
