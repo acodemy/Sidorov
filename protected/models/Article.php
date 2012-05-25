@@ -222,11 +222,18 @@ class Article extends CActiveRecord
     // изменяет статус статьи на этап $delta (параметр необязателен, по умолчанию переводит на 1 эта выше
     public static function statusUpdate($status, $table, $delta = null)
     {
-        if ($table->status == $status)
-        {
-            $table->status = ($delta != null) ? $delta : ++$table->status;
-            $table->save();
-        }
+
+            if ($table->status == $status)
+            {
+                $table->status = ($delta != null) ? $delta : ++$table->status;
+                $table->save();
+
+            }
+    }
+
+    public function toZip()
+    {
+
     }
 
 

@@ -10,7 +10,6 @@ $this->breadcrumbs=array(
     'dataProvider'=>$dataProvider,
     'columns'=>array(
         array(
-
             'name' => 'title',
             'type'=>'raw',
              'value'=>'CHtml::link(CHtml::encode($data->title), "index.php?r=secretary/article"."&id=".$data->id)',

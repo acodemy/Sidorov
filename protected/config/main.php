@@ -68,7 +68,7 @@ return array(
             'connectionString' => 'mysql:host=localhost;dbname=sgu_journal',
 			//'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => 'lollipop',
+			'password' => '',
 			'charset' => 'utf8',
 		),
          'authManager'=>array(
@@ -80,6 +80,9 @@ return array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
         ),
+
+        'zip'=>array(
+            'class'=>'application.extensions.zip.EZip'),
 
 		'log'=>array(
 			'class'=>'CLogRouter',
