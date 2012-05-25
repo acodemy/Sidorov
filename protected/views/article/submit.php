@@ -1,40 +1,74 @@
 <div class="form">
 
 <?php
-    $this->widget('StatusBar', array('status' => $model['status'], 'id' => $model['id']));
-
-    $form=$this->beginWidget('CActiveForm', array(
-	'enableAjaxValidation' => false,
-));
-
+if(Yii::app()->user->hasFlash('contact')):
     ?>
 
-<p class="note">Поля, отмеченные звёздочкой <span class="required">*</span> являются обязательными.</p>
+    <div class="flash-success">
+        <?php echo Yii::app()->user->getFlash('contact'); ?>
+    </div>
+    <?php else:
+    $form=$this->beginWidget('CActiveForm', array(
+        'id'=>'article-index-form',
+        'enableAjaxValidation'=>false,
+        'htmlOptions' => array('name' => 'addArticleForm'),
+    ));
+    ?>
 
-	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'title'); ?>
-		<?php echo $form->textArea($model,'title'); ?>
-		<?php echo $form->error($model,'title'); ?>
+
+
+	<p class="note">Fields with <span class="required">*</span> are required.</p>
+
+
+
+	<?php echo $form->errorSummary($model['Article']);
+
+    if($model['needHidden'] >= 0)
+    {
+    ?>
+
+    <div class="row">
+
+        <?php echo $form->hiddenField($model['Article'],'id', array('value' => $model['id'])); ?>
+        <?php echo $form->error($model['Article'],'id'); ?>
+    </div>
+    <?php } ?>
+    <div class="row">
+		<?php echo $form->labelEx($model['Article'],'title'); ?>
+		<?php echo $form->textArea($model['Article'],'title'); ?>
+		<?php echo $form->error($model['Article'],'title'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textArea($model,'description'); ?>
-		<?php echo $form->error($model,'description'); ?>
+		<?php echo $form->labelEx($model['Article'],'description'); ?>
+		<?php echo $form->textArea($model['Article'],'description'); ?>
+		<?php echo $form->error($model['Article'],'description'); ?>
 	</div>
 
     <div class="row">
-        <?php echo $form->labelEx($model,'section_id'); ?>
-        <?php echo  $form->dropDownList($model, 'section_id', Section::model()->showAll()); ?>
-        <?php echo $form->error($model,'section_id'); ?>
+        <?php echo $form->labelEx($model['Article'],'section_id'); ?>
+        <?php echo  $form->dropDownList($model['Article'], 'section_id', Section::model()->showAll()); ?>
+        <?php echo $form->error($model['Article'],'section_id'); ?>
     </div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Добавить статью и перейти к следующему шагу'); ?>
+		<?php echo CHtml::submitButton('Submit'); ?>
 	</div>
 
-<?php $this->endWidget(); ?>
+<?php $this->endWidget();
+
+    ?>
 
 </div><!-- form -->
+<?php
+if($model['dataProvider'] != null);
+{
+    $dataProvider = $model['dataProvider'];
+
+    $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider'=>$dataProvider
+        )
+    );
+}
+endif; ?>
