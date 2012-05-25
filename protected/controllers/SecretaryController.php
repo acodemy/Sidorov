@@ -35,7 +35,7 @@ class SecretaryController extends Controller
             if (isset($_POST['User'])) {
                 $revision->article_id = $_GET['id'];
                 $revision->user_id = $_POST['User']['login'];
-                $revision->positive=0;
+                $revision->is_positive=0;
                 $revision->status=1;
                 $revision->save();
             }

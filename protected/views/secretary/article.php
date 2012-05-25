@@ -97,9 +97,9 @@ $this->breadcrumbs=array(
                     'value' => '($data->status == 3) ? CHtml::button("Скачать") : "Рецензия ещё не сформирована"'
                 ),
                 array(
-                    'name' => 'positive',
+                    'name' => 'is_positive',
                     'type' => 'raw',
-                    'value' => 'Revisions::getNamePositive($data->positive)'
+                    'value' => 'Revisions::getNamePositive($data->is_positive)'
                 ),
                 array(
                     'class' => 'CButtonColumn',

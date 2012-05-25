@@ -19,7 +19,7 @@ class ReviewerController extends Controller
     public function actionApprove () {
         if(Yii::app()->request->isPostRequest) {
             $revisions =  $this->loadModel($_GET['id'], 'Revisions');
-            $revisions->positive = 1;
+            $revisions->is_positive = 1;
             $revisions->save();
             // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
             if(!isset($_GET['ajax'])) {
@@ -32,7 +32,7 @@ class ReviewerController extends Controller
     public function actionDisapprove () {
         if(Yii::app()->request->isPostRequest) {
             $revisions = $this->loadModel($_GET['id'], 'Revisions');;
-            $revisions->positive = 2;
+            $revisions->is_positive = 2;
             $revisions->save();
             // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
             if(!isset($_GET['ajax'])) {

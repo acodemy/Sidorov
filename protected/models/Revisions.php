@@ -7,8 +7,11 @@
  * @property string $id
  * @property string $article_id
  * @property string $comment
- * @property string $positive
+ * @property string $is_positive
  * @property string $user_id
+ * @property string $status
+ * @property integer $filename
+ * @property string $title
  *
  * The followings are the available model relations:
  * @property FilesRevisions[] $filesRevisions
@@ -42,13 +45,15 @@ class Revisions extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, positive, user_id', 'required'),
+			array('article_id, is_positive, user_id, status', 'required'),
+			array('filename', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>10),
-			array('positive', 'length', 'max'=>1),
+			array('is_positive, status', 'length', 'max'=>1),
+			array('title', 'length', 'max'=>64),
 			array('comment', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, article_id, comment, positive, user_id', 'safe', 'on'=>'search'),
+			array('id, article_id, comment, is_positive, user_id, status, filename, title', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,8 +79,11 @@ class Revisions extends CActiveRecord
 			'id' => 'ID',
 			'article_id' => 'Article',
 			'comment' => 'Comment',
-			'positive' => 'Positive',
+			'is_positive' => 'Is Positive',
 			'user_id' => 'User',
+			'status' => 'Status',
+			'filename' => 'Filename',
+			'title' => 'Title',
 		);
 	}
 
@@ -93,8 +101,11 @@ class Revisions extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('article_id',$this->article_id,true);
 		$criteria->compare('comment',$this->comment,true);
-		$criteria->compare('positive',$this->positive,true);
+		$criteria->compare('is_positive',$this->is_positive,true);
 		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('status',$this->status,true);
+		$criteria->compare('filename',$this->filename);
+		$criteria->compare('title',$this->title,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -114,6 +125,5 @@ class Revisions extends CActiveRecord
             default:
                 return 'Не рассмотрено';
         }
-
     }
 }
