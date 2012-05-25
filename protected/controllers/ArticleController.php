@@ -215,6 +215,40 @@ class ArticleController extends Controller
 
         return $model;
     }
+
+    public function actionDecline($id)
+    {
+        if(Yii::app()->request->isPostRequest) {
+            $article = $this->loadModel($id, 'Article');
+            $article->status = Article::REJECTED;
+            $article->save();
+
+
+           // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if(!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            }
+        }
+        else
+            throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+    }
+
+    public function actionToPrint($id)
+    {
+        if(Yii::app()->request->isPostRequest) {
+            $article = Article::model()->findByPk($id);
+            $article->status = 2;
+            $article->save();
+
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if(!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            }
+        }
+        else
+            throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
