@@ -32,6 +32,7 @@ class SiteController extends Controller
         if(!Yii::app()->user->isGuest)
         {
             // Тут должна быть менюшка со списком действий, применительно к статье
+            $uid = Yii::app()->user->id;
             $model = array();
             $criteria=new CDbCriteria;
             $criteria->select = 'id';
@@ -43,7 +44,18 @@ class SiteController extends Controller
                 $model[$key]=Article::model()->count($criteria); // $params не требуется
                 $model['user'] = Yii::app()->user->id;
             }
-            $this->render('main',array('model'=>$model));
+
+            $cr = new CDbCriteria();
+            $cr->select = 'id';
+            $cr->condition = 'user_id=' . $uid . ' AND status=:status';
+            $cr->params = array(':status' => Revision::WRITING_WAIT);
+            $revisions['wait'] = Revision::model()->count($cr);
+
+            $cr->condition = 'user_id=' . $uid . ' AND status>1';
+            $revisions['all'] = Revision::model()->count($cr);
+
+
+            $this->render('main',array('model'=>$model, 'revisions' => $revisions));
         } else {
             Yii::app()->user->setFlash('main','У вас нет доступа к данным.');
             $this->render('main');
