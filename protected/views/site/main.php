@@ -39,3 +39,16 @@ $this->widget('zii.widgets.CMenu', array(
 ));
     endif; ?>
 
+<h2>Меню рецензента</h2>
+<?php
+    $this->widget('zii.widgets.CMenu', array(
+        'items' => array(
+            array('label' => 'Список статей к рецензированию (' . ($revisions['wait']) . ')',
+                  'url' => array('revision/articleslist')
+            ),
+            array('label' => 'Список рецензий (' . ($revisions['all']) . ')',
+                  'url' => array('revision/list')
+            ),
+        ),
+    ));
+?>

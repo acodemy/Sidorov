@@ -75,7 +75,7 @@ class Article extends CActiveRecord
 		return array(
 			'user_id' => array(self::BELONGS_TO, 'User', 'id'),
 			'section_id' => array(self::BELONGS_TO, 'Section', 'section_id'),
-			'files' => array(self::HAS_MANY, 'FilesArticle', 'article_id'),
+			'files' => array(self::HAS_MANY, 'FileArticle', 'article_id'),
 			'revisions' => array(self::HAS_MANY, 'Revision', 'article_id'),
 		);
 	}
