@@ -5,6 +5,14 @@ $this->breadcrumbs=array(
 );?>
 <h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
 
+
+<?php if(Yii::app()->user->hasFlash('index')):
+    ?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('index'); ?>
+</div>
+<?php else: ?>
 <p>
     <?php $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$dataProvider,
@@ -33,3 +41,5 @@ $this->breadcrumbs=array(
     ));
     ?>
 </p>
+
+    <?php endif; ?>

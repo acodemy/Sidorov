@@ -8,6 +8,15 @@ $this->breadcrumbs=array(
 <p>
     <?php
 
+
+    if(Yii::app()->user->hasFlash('article')):
+    ?>
+
+    <div class="flash-success">
+        <?php echo Yii::app()->user->getFlash('article'); ?>
+    </div>
+    <?php else:
+
     $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider'=>$dataProvider,
         'columns'=>array(
@@ -137,4 +146,6 @@ $this->breadcrumbs=array(
     );
     }
      ?>
+
 </p>
+    <?php endif ?>
