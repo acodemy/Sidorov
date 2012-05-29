@@ -30,9 +30,11 @@
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
                 array('label'=>'Личный кабинет', 'url'=>array('site/main'), 'visible'=>!Yii::app()->user->isGuest),
+                array('label'=>'Кабинет секретаря', 'url'=>array('secretary/index'), 'visible'=>User::model()->findByPk(Yii::app()->user->id)->usertype_id==2),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
 				array('label'=>'Contact', 'url'=>array('/site/contact')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+                array('label'=>'Регистрация', 'url'=>array('/site/register'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 
 			),

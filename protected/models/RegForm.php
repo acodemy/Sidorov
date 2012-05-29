@@ -63,6 +63,7 @@ class RegForm extends CFormModel
         $user->password = $user->hashPassword($user->password);
 
         $user->save();
+        AuthAssignment::makeRoleAuthor($user->id);      //добавил к новому зарегестрированному права автора
 
         return true;
     }
