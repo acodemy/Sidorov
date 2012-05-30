@@ -102,12 +102,20 @@ class Article extends CActiveRecord
     }
 
     /**
-     * Получение пути к папке с файлами для текущей статьи.
-     * Имя папки генерируется по специальному алгоритму
+     * Получение имени папки с файлами для текущей статьи.
+     * Имя папки генерируется по специальному алгоритму.
      * @return string
      */
-    public function getDirectory () {
-        return dirname($_SERVER['SCRIPT_FILENAME']) . '/files/' . substr(md5($this->id), 0, 8) . '/';
+    public function getDirectoryName () {
+        return substr(md5($this->id), 0, 8); // В релизе изменить на 12
+    }
+
+    /**
+     * Получение пути к папке с файлами для текущей статьи.
+     * @return string
+     */
+    public function getDirectoryPath () {
+        return dirname($_SERVER['SCRIPT_FILENAME']) . '/files/' . $this->getDirectoryName() . '/';
     }
 
 	/**
@@ -217,17 +225,5 @@ class Article extends CActiveRecord
                 break;
         }
     }
-
-
-    // изменяет статус статьи на этап $delta (параметр необязателен, по умолчанию переводит на 1 эта выше
-    public static function statusUpdate($status, $table, $delta = null)
-    {
-        if ($table->status == $status)
-        {
-            $table->status = ($delta != null) ? $delta : ++$table->status;
-            $table->save();
-        }
-    }
-
 
 }
