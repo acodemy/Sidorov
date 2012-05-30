@@ -29,15 +29,15 @@ class SiteController extends Controller
 	 */
     public function actionMain()
     {
-        if(!Yii::app()->user->isGuest)
-        {
-            // Тут должна быть менюшка со списком действий, применительно к статье
+        if(!Yii::app()->user->isGuest) {
             $uid = Yii::app()->user->id;
             $model = array();
-            $criteria=new CDbCriteria;
+
+            $criteria = new CDbCriteria();
             $criteria->select = 'id';
-            $criteria->condition='user_id=:userID and status=:statusID';
+            $criteria->condition ='user_id=:userID and status=:statusID';
             $statusArray = Article::getStatusArray();
+
             foreach($statusArray as $key => $value)
             {
                 $criteria->params=array(':userID' => (int) Yii::app()->user->id, 'statusID' => $value);
@@ -57,8 +57,7 @@ class SiteController extends Controller
 
             $this->render('main',array('model'=>$model, 'revisions' => $revisions));
         } else {
-            Yii::app()->user->setFlash('main','У вас нет доступа к данным.');
-            $this->render('main');
+            throw new CHttpException(404,'У вас нет доступа к данным.');
         }
 
     }
@@ -169,43 +168,64 @@ class SiteController extends Controller
 		$this->redirect(Yii::app()->homeUrl);
 	}
 
+    /**
+     * Удалить метод в релизе
+     */
     public function actionCreateRoles()
     {
-        $auth=Yii::app()->authManager;
+        /**
+         * Инициализация authManager
+         */
+        $auth = Yii::app()->authManager;
         $auth->clearAll();
-        $auth->CreateOperation("createArticle",'создание статьи');
-        $auth->CreateOperation("editArticle",'редкатирование статьи');
-        $auth->CreateOperation("deleteArticle",'удаление статьи статьи');
-        $auth->CreateOperation("useArticle",'манипуляции со статьиями');
 
-        $bizRule='return Yii::app()->user->id == $params["user"];';
-        $task = $auth->createTask('seeForArticle', 'просмотреть свои статьи', $bizRule);
-        $task->addChild('useArticle');
+        /**
+         * Операции для автора
+         */
+        $auth->createOperation('createArticle', 'Cоздание статьи');
+        $bizRule = 'return Yii::app()->user->id == $params["article"]->id;';
+        $auth->createOperation('ownArticle', 'Работа со своими статьями', $bizRule);
 
-        $bizRule='return Article::model()->findByPK($params["article_id"])->user_id == Yii::app()->user->id; ';
-        $task = $auth->createTask('changeArticle', 'изменять/добавлять статьи', $bizRule);
-        $task->addChild('useArticle');
+        /**
+         * Операции для рецензента
+         */
+        $bizRule = 'return Yii::app()->user->id == $params["revison"]->user_id;';
+        $auth->createOperation('addRevision', 'Добавление рецензии', $bizRule);
+        $bizRule = 'return Yii::app()->user->id == $params["revison"]->user_id;';
+        $auth->createOperation('viewOwnRevisions', 'Просмотр своих рецензии', $bizRule);
 
-        $role = $auth->createRole('guest');
+        /**
+         * Операции для секретаря
+         */
+        $auth->createOperation('moderateArticle', 'Проверка статьи');
+        $auth->createOperation('moderateRevision', 'Проверка рецензии');
+        $auth->createOperation('addRevisor', 'Добавление рецензента');
+        $auth->createOperation('viewAllArticles', 'Просмотр статей');
+        $auth->createOperation('viewAllRevisions', 'Просмотр рецензий');
 
+        /**
+         * Назначение ролей
+         */
         $role = $auth->createRole('author');
-        $role->addChild('guest');
         $role->addChild('createArticle');
-        $role->addChild('editArticle');
-        $role->addChild('deleteArticle');
-        $role->addChild('useArticle');
-        $role->addChild('seeForArticle');
-        $role->addChild('changeArticle');
+        $role->addChild('ownArticle');
+
+        $role = $auth->createRole('revisor');
+        $role->addChild('author');
+        $role->addChild('addRevision');
+        $role->addChild('viewOwnRevisions');
 
         $role = $auth->createRole('secretary');
-        $role->addChild('author');
+        $role->addChild('revisor');
+        $role->addChild('moderateArticle');
+        $role->addChild('moderateRevision');
+        $role->addChild('addRevisor');
+        $role->addChild('viewAllArticles');
+        $role->addChild('viewAllRevisions');
 
         $role = $auth->createRole('chief');
         $role->addChild('secretary');
-        $role->addChild('editArticle');
-        $auth->assign('author', 10);
 
-
-
+        $auth->assign('chief', 10);
     }
 }
