@@ -183,8 +183,10 @@ class SiteController extends Controller
          * Операции для автора
          */
         $auth->createOperation('createArticle', 'Cоздание статьи');
-        $bizRule = 'return Yii::app()->user->id == $params["article"]->id;';
+        $bizRule = 'return Yii::app()->user->id == $params["article"]->user_id;';
         $auth->createOperation('ownArticle', 'Работа со своими статьями', $bizRule);
+        $bizRule = 'return Yii::app()->user->id == $params["uid"];';
+        $auth->createOperation('viewOwnArticles', 'Просмотр своих рецензии', $bizRule);
 
         /**
          * Операции для рецензента
@@ -209,6 +211,7 @@ class SiteController extends Controller
         $role = $auth->createRole('author');
         $role->addChild('createArticle');
         $role->addChild('ownArticle');
+        $role->addChild('viewOwnArticles');
 
         $role = $auth->createRole('revisor');
         $role->addChild('author');
@@ -226,6 +229,8 @@ class SiteController extends Controller
         $role = $auth->createRole('chief');
         $role->addChild('secretary');
 
-        $auth->assign('chief', 10);
+        $auth->assign('chief', 1);
+        $auth->assign('author', 10);
+        $auth->assign('revisor', 11);
     }
 }
