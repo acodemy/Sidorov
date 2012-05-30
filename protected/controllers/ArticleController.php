@@ -26,25 +26,23 @@ class ArticleController extends Controller
 
 
     public function actionSubmit () {
-        if (isset($_GET['id'])) {
-            $article = $this->loadModel($_GET['id'], 'Article');
-            $isNotGuest = Yii::app()->user->checkAccess('changeArticle', array('article_id' => $_GET['id']));
-        }   else {
+        if (!isset($_GET['id'])) {
             $article = new Article();
-            $isNotGuest = !Yii::app()->user->isGuest;
+            $access = Yii::app()->user->checkAccess('createArticle');
+        }   else {
+            $article = $this->loadModel($_GET['id']);
+            $access = Yii::app()->user->checkAccess('ownArticle', array('article_id' => $_GET['id']));
         }
 
-        if($isNotGuest) {
+        if ($access) {
             if (isset($_POST['Article'])) {
                 $article->attributes = $_POST['Article'];
-
                 if($article->validate()) {
                     $article->user_id = Yii::app()->user->id;
-                    if (!$article->status > 0)
-                    {
-                    $article->status = Article::COAUTHORS_WAIT;
-                    $article->save();
+                    if (isset($article->status)) {
+                        $article->status = Article::COAUTHORS_WAIT;
                     }
+                    $article->save();
                     $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
                 }
             }
@@ -53,9 +51,6 @@ class ArticleController extends Controller
             Yii::app()->user->setFlash('browsing','У вас нет доступа к данным.');
             $this->render('browsing');
         }
-
-
-
     }
 
     public function actionAddCoauthors () {
@@ -228,8 +223,8 @@ class ArticleController extends Controller
         }
     }
 
-    public function loadModel($id, $tableName) {
-        $model = $tableName::model()->findByPk($id);
+    public function loadModel($id) {
+        $model = Article::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404,'The requested page does not exist.');
 
