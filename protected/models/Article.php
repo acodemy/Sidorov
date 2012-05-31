@@ -74,7 +74,7 @@ class Article extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'user_id' => array(self::BELONGS_TO, 'User', 'id'),
-			'section_id' => array(self::BELONGS_TO, 'Section', 'section_id'),
+			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 			'files' => array(self::HAS_MANY, 'FileArticle', 'article_id'),
 			'revisions' => array(self::HAS_MANY, 'Revision', 'article_id'),
 		);
@@ -86,10 +86,12 @@ class Article extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+            'id' => 'Код',
 			'title' => 'Название статьи',
 			'description' => 'Описание',
 			'comment' => 'Комментарий',
-			'section_id' => 'Раздел',
+            'status' => 'Статус',
+            'user_id' => 'Пользователь',
 		);
 	}
 

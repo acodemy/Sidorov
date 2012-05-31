@@ -10,7 +10,7 @@ class RevisionController extends Controller
 
         if($isNotGuest) {
             if (isset($_POST['Revision']) && !empty($_FILES)) {
-                $filesPath = Article::model()->findByPk($revision->article_id)->getDirectory();
+                $filesPath = Article::model()->findByPk($revision->article_id)->getDirectoryPath();
                 $revision->attributes = $_POST['Revision'];
                 $upload = new Upload(str_replace('//', '/', $filesPath));
 

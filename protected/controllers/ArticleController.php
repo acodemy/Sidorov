@@ -3,15 +3,19 @@
 class ArticleController extends Controller
 {
     public function actionBrowsing() {
-        if(isset($_GET['status_id']) && Yii::app()->user->checkAccess('seeForArticle', array('user' => $_GET['user_id'])))
-        {
-            $model = array("user" => (int) $_GET['user_id'], "status" => (int) $_GET['status_id']);
+        $status = (isset($_GET['status'])) ? (int)$_GET['status'] : 0;
+        $uid = Yii::app()->user->id;
+        $access =  Yii::app()->user->checkAccess('viewOwnArticles');
+
+        if($access && $status) {
+            $model = array('user' => $uid, 'status' => $status);
             $model['dataProvider'] = new CActiveDataProvider('Article', array(
                 'criteria'=>array(
                     'condition'=>'user_id =:User AND status =:Status',
-                    'params'=>array(':User' => $model['user'], ':Status' => $model['status'])
+                    'params'=>array(':User' => $uid, ':Status' => $status)
                 ),
             ));
+
             $this->render('browsing',array('model'=>$model));
         } else {
             Yii::app()->user->setFlash('browsing','У вас нет доступа к данным.');
@@ -20,6 +24,16 @@ class ArticleController extends Controller
     }
 
     public function actionSubmit () {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление статьи';
+
+        /**
+         * Устанавливается layout в 2 колонки
+         */
+        $this->layout='//layouts/column2';
+
         /**
          * Проверка - добавляется новая статья или редактируется уже существующая.
          * Проверка прав на добавление/редактирование.
@@ -56,6 +70,16 @@ class ArticleController extends Controller
     }
 
     public function actionAddCoauthors () {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление статьи';
+
+        /**
+         * Устанавливается layout в 2 колонки
+         */
+        $this->layout='//layouts/column2';
+
         if (isset($_GET['id'])) {
             $article = $this->loadModel($_GET['id']);
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
@@ -88,6 +112,16 @@ class ArticleController extends Controller
     }
 
     public function actionAddFiles () {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление статьи';
+
+        /**
+         * Устанавливается layout в 2 колонки
+         */
+        $this->layout='//layouts/column2';
+
         if (isset($_GET['id'])) {
             $article = $this->loadModel($_GET['id']);
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
@@ -139,6 +173,16 @@ class ArticleController extends Controller
     }
 
     public function actionAddComment () {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление статьи';
+
+        /**
+         * Устанавливается layout в 2 колонки
+         */
+        $this->layout='//layouts/column2';
+
         if (isset($_GET['id'])) {
             $article = $this->loadModel($_GET['id']);
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
@@ -161,12 +205,21 @@ class ArticleController extends Controller
 
             $this->render('addcomment', array('model' => $article));
         } else {
-            Yii::app()->user->setFlash('addcomment','У вас нет доступа к данным.');
-            $this->render('addcomment');
+            throw new CHttpException('404', 'Ошибка');
         }
     }
 
     public function actionConfirm () {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление статьи';
+
+        /**
+         * Устанавливается layout в 2 колонки
+         */
+        $this->layout='//layouts/column2';
+
         if (isset($_GET['id'])) {
             $article = $this->loadModel($_GET['id']);
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
@@ -196,12 +249,12 @@ class ArticleController extends Controller
                     throw new CHttpException(404, 'Архив не создался.');
                 }
 
-                //$this->redirect($this->createUrl('site/index', array('id' => $article->id)));
+                $this->redirect($this->createUrl('site/main', array('id' => $article->id)));
             }
 
             $this->render('confirm', array('model' => $article));
         } else {
-            Yii::app()->user->setFlash('confirm','У вас нет доступа к данным.');
+            Yii::app()->user->setFlash('confirm', 'У вас нет доступа к данным.');
             $this->render('confirm');
         }
     }

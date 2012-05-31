@@ -7,13 +7,48 @@ class StatusBar extends CWidget
 
     public function init()
     {
-        for ($i = 3; $i < 8; $i++)
-        {
-            $tempStatusStringLink = ($this->status >= $i) ? CHtml::link(($i-3).') '.Article::getStatusAuthor($i), '?r=article/'.Article::returnNameStatus($i).'&id='.$this->id) : ($i-3).') '.Article::getStatusAuthor($i).' (этап не доступен)' ;
-            echo "<p>".$tempStatusStringLink."</p>";
-        }
+        $action = Yii::app()->controller->action->id;
+        $steps = array (
+            array(
+                'title' => 'Основные данные',
+                'action' => 'submit',
+                'number' => 1,
+                'allow' => 'submit',
+            ),
+            array(
+                'title' => 'Добавление соавторов',
+                'action' => 'addcoauthors',
+                'number' => 2,
+                'allow' => 'addcoauthors',
+            ),
+            array(
+                'title' => 'Добавление файлов',
+                'action' => 'addfiles',
+                'number' => 3,
+                'allow' => 'addcoauthors',
+            ),
+            array(
+                'title' => 'Добавление комментария',
+                'action' => 'addcomment',
+                'number' => 4,
+                'allow' => 'addcomment',
+            ),
+            array(
+                'title' => 'Подтверждение',
+                'action' => 'confirm',
+                'number' => 5,
+                'allow' => 'addcomment',
+            ),
+        );
 
-        // этот метод будет вызван методом CController::beginWidget()
+        $content = '';
+        foreach ($steps as $step) {
+            $content .= '<li>';
+            $content .= 'Шаг ' . ($step['number']) . '. ';
+            $content .= $step['title'];
+            $content .= '</li>';
+        }
+        echo '<ul>' . $content . '</ul>';
     }
 
     public function run()
@@ -22,10 +57,3 @@ class StatusBar extends CWidget
     }
 
 }
-/**
- * Created by JetBrains PhpStorm.
- * User: Денис
- * Date: 11.05.12
- * Time: 0:16
- * To change this template use File | Settings | File Templates.
- */

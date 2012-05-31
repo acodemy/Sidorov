@@ -64,7 +64,7 @@ class Section extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'name' => 'Название раздела',
+			'name' => 'Раздел',
 			'udk' => 'УДК',
 		);
 	}

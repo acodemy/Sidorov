@@ -1,54 +1,58 @@
 <?php
-
-$this->pageTitle=Yii::app()->name . ' - Личный кабинет';
-$this->breadcrumbs=array(
-    'index',
-);
-
-if(Yii::app()->user->hasFlash('main')):
-    ?>
-
-<div class="flash-success">
-    <?php echo Yii::app()->user->getFlash('main'); ?>
-</div>
-<?php else: ?>
-
-<h1>Личный кабинет</h1>
-
-<?php
-
-
-
-$this->widget('zii.widgets.CMenu', array(
-    'items'=>array(
-        // Important: you need to specify url as 'controller/action',
-        // not just as 'controller' even if default acion is used.
-        array('label'=>'Добавить статью ' , 'url'=>array('article/submit')),
-        array('label'=>'Отклоненные статьи: ' . (isset($model['REJECTED']) ? $model['REJECTED'] : 0), 'url'=>array('article/browsing', 'status_id'=>1, 'user_id'=>$model['user'])),
-        // 'Products' menu item will be selected no matter which tag parameter value is since it's not specified.
-        array('label'=>'Опубликованые статьи:' . (isset($model['PUBLISHED']) ? $model['PUBLISHED'] : 0), 'url'=>array('article/browsing', 'status_id'=>2, 'user_id'=>$model['user'])),
-        array('label'=>'Ожидающие рецензии:' . (isset($model['UNDER_REVISION']) ? $model['UNDER_REVISION'] : 0), 'url'=>array('article/browsing', 'status_id'=>3, 'user_id'=>$model['user'])),
-        array('label'=>'Ожидающие добавления соавторов:' . (isset($model['COAUTHORS_WAIT']) ? $model['COAUTHORS_WAIT'] : 0), 'url'=>array('article/browsing', 'status_id'=>4, 'user_id'=>$model['user'])),
-        array('label'=>'Ожидающие добавления файлов:' . (isset($model['FILES_WAIT']) ? $model['FILES_WAIT'] : 0), 'url'=>array('article/browsing', 'status_id'=>5, 'user_id'=>$model['user'])),
-        array('label'=>'Ожидающие добавления комментария:' . (isset($model['COMMENTS_WAIT']) ? $model['COMMENTS_WAIT'] : 0), 'url'=>array('article/browsing', 'status_id'=>6, 'user_id'=>$model['user'])),
-        array('label'=>'Ожидающие подтверждения:' . (isset($model['CONFIRM_WAIT']) ? $model['CONFIRM_WAIT'] : 0), 'url'=>array('article/browsing', 'status_id'=>7, 'user_id'=>$model['user'])),
-        array('label'=>'На доработке:' . (isset($model['REWORK']) ? $model['REWORK'] : 0), 'url'=>array('article/browsing', 'status_id'=>8, 'user_id'=>$model['user'])),
-
-
-    ),
-));
-    endif; ?>
-
-<h2>Меню рецензента</h2>
-<?php
-    $this->widget('zii.widgets.CMenu', array(
-        'items' => array(
-            array('label' => 'Список статей к рецензированию (' . ($revisions['wait']) . ')',
-                  'url' => array('revision/articleslist')
-            ),
-            array('label' => 'Список рецензий (' . ($revisions['all']) . ')',
-                  'url' => array('revision/list')
-            ),
-        ),
-    ));
+    $title = 'Личный кабинет';
+    $this->pageTitle = Yii::app()->name . ' — ' . $title;
+    $this->breadcrumbs = array($title);
 ?>
+
+<div class="well" style="margin-top:10px; padding: 8px 0;">
+<?php if (Yii::app()->user->checkAccess('author')) : ?>
+
+        <?php
+            $this->widget('zii.widgets.CMenu', array(
+                'encodeLabel' => false,
+                'items'=>array(
+                    array(
+                        'label' => 'Меню автора',
+                        'itemOptions' => array('class' => 'nav-header'),
+                    ),
+                    array('label' => '<b>Добавить статью</b>' , 'url' => array('article/submit')),
+                    array('label'=>'Отклоненные статьи (' . (isset($model['REJECTED']) ? $model['REJECTED'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 1)),
+                    array('label'=>'Опубликованые статьи (' . (isset($model['PUBLISHED']) ? $model['PUBLISHED'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 2)),
+                    array('label'=>'Ожидающие рецензии (' . (isset($model['UNDER_REVISION']) ? $model['UNDER_REVISION'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 3)),
+                    array('label'=>'Ожидающие добавления соавторов (' . (isset($model['COAUTHORS_WAIT']) ? $model['COAUTHORS_WAIT'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 4)),
+                    array('label'=>'Ожидающие добавления файлов (' . (isset($model['FILES_WAIT']) ? $model['FILES_WAIT'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 5)),
+                    array('label'=>'Ожидающие добавления комментария (' . (isset($model['COMMENTS_WAIT']) ? $model['COMMENTS_WAIT'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 6)),
+                    array('label'=>'Ожидающие подтверждения (' . (isset($model['CONFIRM_WAIT']) ? $model['CONFIRM_WAIT'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 7)),
+                    array('label'=>'На доработке (' . (isset($model['REWORK']) ? $model['REWORK'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 8)),
+                ),
+               'htmlOptions' => array(
+                   'class' => 'nav nav-list',
+               ),
+            ));
+        ?>
+<?php endif; ?>
+
+<?php if (Yii::app()->user->checkAccess('revisor')) : ?>
+    <?php
+        $this->widget('zii.widgets.CMenu', array(
+            'items' => array(
+                array('label' => 'Меню рецензента',
+                    'itemOptions' => array(
+                        'class' => 'nav-header',
+                        'style' => 'margin-top:15px;',
+                    ),
+                ),
+                array('label' => 'Список статей к рецензированию (' . ($revisions['wait']) . ')',
+                      'url' => array('revision/articleslist')
+                ),
+                array('label' => 'Список рецензий (' . ($revisions['all']) . ')',
+                      'url' => array('revision/list')
+                ),
+            ),
+            'htmlOptions' => array(
+                'class' => 'nav nav-list',
+            ),
+        ));
+    ?>
+<?php endif; ?>
+</div>

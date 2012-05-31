@@ -9,8 +9,6 @@
 <div class="form">
 
 <?php
-    $this->widget('StatusBar', array('status' => $status, 'id' => $id));
-
     $form=$this->beginWidget('CActiveForm', array(
     'enableAjaxValidation'=>false,
     'htmlOptions'=>array('enctype'=>'multipart/form-data'),

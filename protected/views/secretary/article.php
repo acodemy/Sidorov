@@ -103,7 +103,7 @@ $this->breadcrumbs=array(
                 array(
                     'name' => 'Files',
                     'type' => 'raw',
-                    'value' => '($data->status == 3) ? CHtml::button("Скачать") : "Рецензия ещё не сформирована"'
+                    'value' => '($data->status == 2) ? CHtml::button("Скачать") : "Рецензия ещё не сформирована"'
                 ),
                 array(
                     'name' => 'is_positive',

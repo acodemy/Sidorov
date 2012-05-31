@@ -4,8 +4,8 @@ class SecretaryController extends Controller
 {
 	public function actionIndex()
 	{
-        if(Yii::app()->user->checkAccess('secretary'))
-        {
+        /*if(Yii::app()->user->checkAccess('secretary'))
+        {*/
 		$dataProvider=new CActiveDataProvider('Article', array(
                 'criteria' => array(
                     'condition'=>'status<=' . Article::UNDER_REVISION
@@ -14,18 +14,18 @@ class SecretaryController extends Controller
             )
         );
         $this->render('index', array('dataProvider' => $dataProvider));
-        } else
+       /* } else
         {
             Yii::app()->user->setFlash('index','У вас нет прав доступа к этой странице.');
             $this->render('index');
-        }
+        }*/
 	}
 
 
     public function actionArticle()
     {
-        if (isset($_GET['id']) && Yii::app()->user->checkAccess('secretary'))
-        {
+        /*if (isset($_GET['id']) && Yii::app()->user->checkAccess('secretary'))
+        {*/
             $revision = new Revisions;
             $users = new User;
             $dataProvider=new CActiveDataProvider('Article', array(
@@ -61,10 +61,10 @@ class SecretaryController extends Controller
                 'article' => Article::model()->findByPk($_GET['id'])->status
                 )
             );
-        } else {
+       /* } else {
             Yii::app()->user->setFlash('article','У вас нет доступа к данным.');
             $this->render('article');
-        }
+        }*/
     }
 
 

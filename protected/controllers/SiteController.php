@@ -29,6 +29,8 @@ class SiteController extends Controller
 	 */
     public function actionMain()
     {
+        $this->title = 'Личный кабинет';
+
         if(!Yii::app()->user->isGuest) {
             $uid = Yii::app()->user->id;
             $model = array();
@@ -88,6 +90,7 @@ class SiteController extends Controller
 	 */
 	public function actionContact()
 	{
+        $this->title = 'Контакты';
 
 		$model=new ContactForm;
 		if(isset($_POST['ContactForm']))
@@ -112,6 +115,8 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
+        $this->title = 'Регистрация';
+
        $model=new RegForm();
 
         if(isset($_POST['RegForm']))
@@ -128,7 +133,7 @@ class SiteController extends Controller
                 $this->refresh();
             }
         }
-        $this->render('register',array('model'=>$model));
+        $this->render('register', array('model' => $model, 'title' => $this->title));
     }
 
 	/**
@@ -136,6 +141,7 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
+        $this->title = 'Форма входа';
 
         $model=new LoginForm;
 
@@ -185,8 +191,7 @@ class SiteController extends Controller
         $auth->createOperation('createArticle', 'Cоздание статьи');
         $bizRule = 'return Yii::app()->user->id == $params["article"]->user_id;';
         $auth->createOperation('ownArticle', 'Работа со своими статьями', $bizRule);
-        $bizRule = 'return Yii::app()->user->id == $params["uid"];';
-        $auth->createOperation('viewOwnArticles', 'Просмотр своих рецензии', $bizRule);
+        $auth->createOperation('viewOwnArticles', 'Просмотр своих ');
 
         /**
          * Операции для рецензента

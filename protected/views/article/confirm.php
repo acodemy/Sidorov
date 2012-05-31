@@ -4,9 +4,7 @@
 <div class="flash-success">
     <?php echo Yii::app()->user->getFlash('addcoauthors'); ?>
 </div>
-<?php else:
-    $this->widget('StatusBar', array('status' => $model['status'], 'id' => $model['id']));
-    ?>
+
 
 <div class='form'>
 

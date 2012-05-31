@@ -51,27 +51,40 @@ class RegForm extends CFormModel
 
     public function register($attrs)
     {
-        $user = new User;
-       // print_r($attrs);
-        foreach ($attrs as $key => $value)
-        {
-            if($key != 'pass2')
-            {
-                $user->$key = $value;
-            };
-        }
+        $user = new User();
+        $user->attributes;
         $user->password = $user->hashPassword($user->password);
-
         $user->save();
-        AuthAssignment::makeRoleAuthor($user->id);      //добавил к новому зарегестрированному права автора
-
-        return true;
+        $id = $user->id;
+        $auth = Yii::app()->authManager;
+        if ((bool)$user->may_reviewer) {
+            $auth->assign('revisor', $id);
+        } else {
+            $auth->assign('author', $id);
+        }
     }
 
     public function attributeLabels()
     {
         return array(
-            'verifyCode'=>'Verification Code',
+            'id' => 'Код',
+            'login' => 'Имя пользователя',
+            'password' => 'Пароль',
+            'pass2' => 'Повтор пароля',
+            'email' => 'Электронная почта',
+            'first_name' => 'Имя',
+            'middle_name' => 'Отчество',
+            'last_name' => 'Фамилия',
+            'country' => 'Страна',
+            'city' => 'Город',
+            'degree' => 'Учёная степень',
+            'phone' => 'Номер телефона',
+            'additional_phone' => 'Дополнительный номер телефона',
+            'address' => 'Адрес',
+            'position' => 'Должность',
+            'institution' => 'Учебное заведение',
+            'department' => 'Факультет',
+            'may_reviewer' => 'Согласен быть рецензентом',
         );
     }
 }
