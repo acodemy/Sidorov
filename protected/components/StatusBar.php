@@ -8,6 +8,8 @@ class StatusBar extends CWidget
     public function init()
     {
         $action = Yii::app()->controller->action->id;
+        $stage = $this->getStage($action);
+        $status = Article::model()->findByPk($_GET['id'])->status;
         $steps = array (
             array(
                 'title' => 'Основные данные',
@@ -44,8 +46,12 @@ class StatusBar extends CWidget
         $content = '';
         foreach ($steps as $step) {
             $content .= '<li>';
+            $ifIsIf = ($status >= ($step['number']+2));
+            $content .= $ifIsIf ? '<a href=.?r=/article/'.Article::returnNameStatus($step["number"]+2).'&id='.$_GET["id"].'>' : '';
+            $content .= ($step['number']==$stage) ? '<i class="icon-forward"></i>' : '';
             $content .= 'Шаг ' . ($step['number']) . '. ';
             $content .= $step['title'];
+            $content .= $ifIsIf ? '</a>' : '';
             $content .= '</li>';
         }
         echo '<ul>' . $content . '</ul>';
@@ -55,5 +61,28 @@ class StatusBar extends CWidget
     {
         // этот метод будет вызван методом CController::endWidget()
     }
+
+    private function getStage($action)
+    {
+        switch ($action)
+        {
+            case ('submit'):
+                return 1;
+                break;
+            case ('addcoauthors'):
+                return 2;
+                break;
+            case ('addfiles'):
+                return 3;
+                break;
+            case ('addcomment'):
+                return 4;
+                break;
+            case ('confirm'):
+                return 5;
+                break;
+        }
+    }
+
 
 }
