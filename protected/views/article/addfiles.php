@@ -9,23 +9,24 @@
 <div class="form">
 
 <?php
-    $form=$this->beginWidget('CActiveForm', array(
-    'enableAjaxValidation'=>false,
-    'htmlOptions'=>array('enctype'=>'multipart/form-data'),
-)); ?>
+    $form = $this->beginWidget('CActiveForm', array(
+        'htmlOptions' => array('enctype' => 'multipart/form-data'),
+    ));
+?>
 
 <?php echo $form->errorSummary($model); ?>
 
-    <div class="row">
+    <div class="rows">
         <label for='file'>Добавить файл</label>
-        <input type='file' name='file' />
+        <input id='file' type='file' name='file' />
     </div>
 
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Добавить файл'); ?>
+    <div class="rows buttons">
+        <?php echo CHtml::submitButton('Добавить файл', array('class' => 'btn btn-primary')); ?>
         <?php
-            $url = $this->createUrl('article/addcomment', array('id' => $id));
-            echo "<a href='{$url}'>Перейти к следующему шагу</a>"; //появляется если хотя бы 1 файл добавлен
+            $url = $this->createUrl('article/addcomment', array('id' => $article->id));
+            if ($article->filesCount)
+                echo "<a href='{$url}' class='btn'>Перейти к следующему шагу</a>"; //появляется если хотя бы 1 файл добавлен
         ?>
     </div>
 
@@ -34,7 +35,7 @@
 <?php
     $dataProvider=new CActiveDataProvider('FileArticle', array(
        'criteria'=>array(
-           'condition'=>'article_id=' . $id
+           'condition'=>'article_id=' . $article->id
        ),
     ));
 
@@ -54,6 +55,9 @@
                  'template' => '{delete}'
              ),
          ),
+        'htmlOptions' => array(
+            'class' => 'table table-striped'
+        ),
     ));
 ?>
 

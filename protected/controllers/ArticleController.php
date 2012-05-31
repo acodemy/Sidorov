@@ -85,7 +85,7 @@ class ArticleController extends Controller
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
             $statusCheck = in_array($article->status, array(Article::COAUTHORS_WAIT, Article::FILES_WAIT, Article::COMMENTS_WAIT, Article::CONFIRM_WAIT));
         } else {
-            Yii::app()->user->setFlash('addcoauthors','Вы ошибочно попаи на данную страницу.');
+            Yii::app()->user->setFlash('addcoauthors','Вы ошибочно попали на данную страницу.');
             $this->render('addcoauthors');
         }
 
@@ -127,7 +127,7 @@ class ArticleController extends Controller
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
             $statusCheck = in_array($article->status, array(Article::COAUTHORS_WAIT, Article::FILES_WAIT, Article::COMMENTS_WAIT, Article::CONFIRM_WAIT));
         } else {
-            Yii::app()->user->setFlash('addfiles','Вы ошибочно попаи на данную страницу.');
+            Yii::app()->user->setFlash('addfiles','Вы ошибочно попали на данную страницу.');
             $this->render('addfiles');
         }
 
@@ -156,8 +156,9 @@ class ArticleController extends Controller
 
                     if ($file->validate()) {
                         $file->save();
-
-                        $article->status = Article::COMMENTS_WAIT;
+                        if ($article->status == Article::FILES_WAIT) {
+                            $article->status = Article::COMMENTS_WAIT;
+                        }
                         $article->save();
 
                         $this->redirect($this->createUrl('article/addfiles', array('id' => $article->id)));
@@ -165,7 +166,7 @@ class ArticleController extends Controller
                 }
             }
 
-            $this->render('addfiles',array('model' => $file, 'id' => $article->id, 'status' => $article->status));
+            $this->render('addfiles',array('model' => $file, 'article' => $article, 'status' => $article->status));
         } else {
             Yii::app()->user->setFlash('addcoauthors','У вас нет доступа к данным.');
             $this->render('addfiles');
@@ -188,7 +189,7 @@ class ArticleController extends Controller
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
             $statusCheck = in_array($article->status, array(Article::COMMENTS_WAIT, Article::CONFIRM_WAIT));
         } else {
-            Yii::app()->user->setFlash('addcomment','Вы ошибочно попаи на данную страницу.');
+            Yii::app()->user->setFlash('addcomment','Вы ошибочно попали на данную страницу.');
             $this->render('addcomment');
         }
 
@@ -225,7 +226,7 @@ class ArticleController extends Controller
             $access = Yii::app()->user->checkAccess('ownArticle', array('article' => $article));
             $statusCheck = in_array($article->status, array(Article::CONFIRM_WAIT));
         } else {
-            Yii::app()->user->setFlash('confirm','Вы ошибочно попаи на данную страницу.');
+            Yii::app()->user->setFlash('confirm','Вы ошибочно попали на данную страницу.');
             $this->render('confirm');
         }
 
@@ -252,10 +253,10 @@ class ArticleController extends Controller
                 $this->redirect($this->createUrl('site/main', array('id' => $article->id)));
             }
 
-            $this->render('confirm', array('model' => $article));
+            $this->render('confirm', array('article' => $article));
         } else {
             Yii::app()->user->setFlash('confirm', 'У вас нет доступа к данным.');
-            $this->render('confirm');
+            $this->render('submit');
         }
     }
 

@@ -16,30 +16,30 @@
 
 <?php echo $form->errorSummary($model); ?>
 
-    <div class="row">
+    <div class="rows">
         <?php echo $form->labelEx($model,'first_name'); ?>
         <?php echo $form->textField($model,'first_name'); ?>
         <?php echo $form->error($model,'first_name'); ?>
     </div>
 
-    <div class="row">
+    <div class="rows">
         <?php echo $form->labelEx($model,'middle_name'); ?>
         <?php echo $form->textField($model,'middle_name'); ?>
         <?php echo $form->error($model,'middle_name'); ?>
     </div>
 
-    <div class="row">
+    <div class="rows">
         <?php echo $form->labelEx($model,'last_name'); ?>
         <?php echo $form->textField($model,'last_name'); ?>
         <?php echo $form->error($model,'last_name'); ?>
     </div>
 
 
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Добавить соавтора'); ?>
+    <div class="rows buttons">
+        <?php echo CHtml::submitButton('Добавить соавтора', array('class' => 'btn btn-primary')); ?>
         <?php
             $url = $this->createUrl('article/addfiles', array('id' => (int)$_GET['id']));
-            echo "<a href='{$url}'>Перейти к следующему шагу</a>";
+            echo "<a class='btn' href='{$url}'>Перейти к следующему шагу</a>";
         ?>
     </div>
 
@@ -69,6 +69,9 @@ $this->widget('zii.widgets.grid.CGridView', array(
             ),
             'template' => '{delete}'
         ),
+    ),
+    'htmlOptions' => array(
+        'class' => 'table table-striped'
     ),
 ));
 ?>

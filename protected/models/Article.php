@@ -77,6 +77,7 @@ class Article extends CActiveRecord
 			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 			'files' => array(self::HAS_MANY, 'FileArticle', 'article_id'),
 			'revisions' => array(self::HAS_MANY, 'Revision', 'article_id'),
+            'filesCount' => array(self::STAT, 'FileArticle', 'article_id'),
 		);
 	}
 
@@ -88,9 +89,10 @@ class Article extends CActiveRecord
 		return array(
             'id' => 'Код',
 			'title' => 'Название статьи',
-			'description' => 'Описание',
+			'description' => 'Описание статьи',
 			'comment' => 'Комментарий',
             'status' => 'Статус',
+            'section_id' => 'Раздел',
             'user_id' => 'Пользователь',
 		);
 	}

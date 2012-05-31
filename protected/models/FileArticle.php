@@ -56,7 +56,7 @@ class FileArticle extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
+
 		);
 	}
 
@@ -68,17 +68,30 @@ class FileArticle extends CActiveRecord
 		return array(
 			'filename' => 'Имя файла',
 			'title' => 'Название',
+            'file' => 'Добавить файл',
 		);
 	}
 
     public function beforeDelete () {
         parent::beforeDelete();
-        $filename = Article::model()->findByPk($this->article_id)->getDirectory() . $this->filename;
+        $filename = Article::model()->findByPk($this->article_id)->getDirectoryPath() . $this->filename;
 
         if(!unlink($filename))
             return false;
         else
             return true;
+    }
+
+    public function afterDelete () {
+        parent::afterDelete();
+        $article = Article::model()->findByPk($this->article_id);
+
+        if (!$article->filesCount) {
+            $article->status = Article::FILES_WAIT;
+            $article->save();
+        }
+
+        return true;
     }
 
 	/**

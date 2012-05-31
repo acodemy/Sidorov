@@ -1,6 +1,3 @@
-<?php if(Yii::app()->user->hasFlash('addcoauthors')):
-    ?>
-
 <div class="flash-success">
     <?php echo Yii::app()->user->getFlash('addcoauthors'); ?>
 </div>
@@ -13,16 +10,20 @@
     )); ?>
 
     <?php
-    echo $form->errorSummary($model); ?>
+    echo $form->errorSummary($article); ?>
 
-
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Отправить статью', array('name' => 'submit')); ?>
+    <div class="rows">
+        <dl class="dl-horizontal">
+            <dt>Название статьи</dt>
+            <dd><?php echo $article->title; ?></dd>
+            <dt>Описание статьи</dt>
+            <dd><?php echo $article->description; ?></dd>
+        </dl>
+    </div>
+    <div class="rows buttons">
+        <?php echo CHtml::submitButton('Подтвердить отправку статьи', array('name' => 'submit', 'class' => 'btn btn-primary')); ?>
     </div>
 
     <?php $this->endWidget(); ?>
 
-
 </div><!-- form -->
-
-<?php endif; ?>

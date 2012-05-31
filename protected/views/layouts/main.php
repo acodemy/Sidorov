@@ -18,6 +18,16 @@
             color:red;
             font-weight: bold;
         }
+        .errorMessage {
+            color:red;
+        }
+        input[type="checkbox"] {
+            float:left;
+            margin-right: 8px;
+        }
+        .note {
+            font-style: italic;
+        }
     </style>
 </head>
 
