@@ -207,9 +207,9 @@ class SiteController extends Controller
         /**
          * Операции для рецензента
          */
-        $bizRule = 'return Yii::app()->user->id == $params["revison"]->user_id;';
+        $bizRule = 'return Yii::app()->user->id == $params["revision"]->user_id;';
         $auth->createOperation('addRevision', 'Добавление рецензии', $bizRule);
-        $bizRule = 'return Yii::app()->user->id == $params["revison"]->user_id;';
+        $bizRule = 'return Yii::app()->user->id == $params["revision"]->user_id;';
         $auth->createOperation('viewOwnRevisions', 'Просмотр своих рецензии', $bizRule);
 
         /**
