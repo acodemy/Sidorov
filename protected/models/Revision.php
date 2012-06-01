@@ -79,7 +79,7 @@ class Revision extends CActiveRecord
 		return array(
 			'id' => 'Код',
 			'user_id' => 'Рецензент',
-			'comment' => 'Комментарий',
+			'comment' => 'Комментарий для редактора',
 			'status' => 'Статус',
 			'is_positive' => 'Тип',
             'authorFullName' => 'Автор'

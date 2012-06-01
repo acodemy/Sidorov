@@ -57,7 +57,18 @@ class SiteController extends Controller
             $revisions['all'] = Revision::model()->count($cr);
 
 
-            $this->render('main',array('model'=>$model, 'revisions' => $revisions));
+            $cr = new CDbCriteria();
+            $cr->select = 'id';
+            $cr->condition = 'status=:status';
+            $cr->params = array(':status' => Article::UNDER_REVISION);
+            $moderate['articles'] = Article::model()->count($cr);
+
+            $cr->condition = 'status=:status';
+            $cr->params = array(':status' => Revision::MODERATE);
+            $moderate['revisions'] = Revision::model()->count($cr);
+
+
+            $this->render('main',array('model'=>$model, 'revisions' => $revisions, 'moderate' => $moderate));
         } else {
             throw new CHttpException(404,'У вас нет доступа к данным.');
         }

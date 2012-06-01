@@ -9,7 +9,7 @@ class StatusBar extends CWidget
     {
         $action = Yii::app()->controller->action->id;
         $stage = $this->getStage($action);
-        $status = Article::model()->findByPk($_GET['id'])->status;
+        $status = isset($_GET['id']) ? Article::model()->findByPk($_GET['id'])->status : 1;
         $steps = array (
             array(
                 'title' => 'Основные данные',
@@ -45,16 +45,17 @@ class StatusBar extends CWidget
 
         $content = '';
         foreach ($steps as $step) {
-            $content .= '<li>';
+            $z = ($step['number']==$stage) ? ' class="active" ' : '';
+            $content .= "<li{$z}>";
             $ifIsIf = ($status >= ($step['number']+2));
-            $content .= $ifIsIf ? '<a href=.?r=/article/'.Article::returnNameStatus($step["number"]+2).'&id='.$_GET["id"].'>' : '';
-            $content .= ($step['number']==$stage) ? '<i class="icon-forward"></i>' : '';
+            $content .= $ifIsIf ? '<a  href=.?r=/article/'.Article::returnNameStatus($step["number"]+2).'&id='.$_GET["id"].'>' : '<span style="padding:4px 15px!important;display:block;">';
+
             $content .= 'Шаг ' . ($step['number']) . '. ';
             $content .= $step['title'];
-            $content .= $ifIsIf ? '</a>' : '';
+            $content .= $ifIsIf ? '</a>' : '</span>';
             $content .= '</li>';
         }
-        echo '<ul>' . $content . '</ul>';
+        echo '<ul class="nav nav-pills nav-stacked">' . $content . '</ul>';
     }
 
     public function run()

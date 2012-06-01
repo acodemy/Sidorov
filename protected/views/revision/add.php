@@ -1,15 +1,33 @@
 <?php
 $this->breadcrumbs=array(
-	'Revision'=>array('/revision'),
-	'Add',
+	'Рецензии'=>array('/revision'),
+	'Добавление',
 );?>
-<h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
+<div class="rows">
+    <dl class="dl-horizontal" style='text-overflow: clip;'>
+        <dt><?php echo $revision->article->getAttributeLabel('title');?></dt>
+        <dd><?php echo $revision->article->title; ?></dd>
 
-<p>
-	Тут идёт описание статьи.
-    Тут предлагается скачать файлы к статье.
-    Здесь форма добавления рецензии.
-</p>
+        <dt><?php echo $revision->article->getAttributeLabel('description');?></dt>
+        <dd><?php echo $revision->article->description; ?></dd>
+
+        <dt><?php echo $revision->article->getAttributeLabel('section.name');?></dt>
+        <dd><?php echo $revision->article->section->name; ?></dd>
+
+        <dt>Авторы</dt>
+        <dd><?php echo $revision->article->author->getFullName(); ?></dd>
+        <?php
+        if ($revision->article->coauthorsCount) {
+            $coauthors = $revision->article->coauthors;
+            foreach ($coauthors as $coauthor) {
+                echo "<dd>{$coauthor->getFullName()}</dd>\n";
+            }
+        }
+        ?>
+    </dl>
+</div>
+    <?php echo CHtml::link('<i class="icon-download-alt"></i> Скачать для просмотра', $revision->article->getArchiveLink(), array('class' => 'btn btn-info')); ?>
+    <hr />
 <div class="form">
 
     <?php
@@ -21,21 +39,21 @@ $this->breadcrumbs=array(
 
     ?>
 
-    <?php echo $form->errorSummary($model); ?>
+    <?php echo $form->errorSummary($revision); ?>
 
-    <div class="row">
-        <?php echo $form->labelEx($model,'comment'); ?>
-        <?php echo $form->textArea($model,'comment'); ?>
-        <?php echo $form->error($model,'comment'); ?>
+    <div class="rows">
+        <label for='file'>Добавить файл с рецензией</label>
+        <input id='file' type='file' name='file' class='input-file' />
     </div>
 
-    <div class="row">
-        <label for='file'>Добавить файл</label>
-        <input type='file' name='file' />
+    <div class="rows">
+        <?php echo $form->labelEx($revision,'comment'); ?>
+        <?php echo $form->textArea($revision,'comment', array('class' => 'span6', 'rows' => '4')); ?>
+        <?php echo $form->error($revision,'comment'); ?>
     </div>
 
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Добавить рецензию'); ?>
+    <div class="rows buttons">
+        <?php echo CHtml::submitButton('Добавить рецензию', array('class' => 'btn btn-primary')); ?>
     </div>
 
     <?php $this->endWidget(); ?>

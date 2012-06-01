@@ -1,8 +1,6 @@
 <?php
-    $this->pageTitle=Yii::app()->name . ' - Личный кабинет';
-    $this->breadcrumbs=array(
-        'browsing',
-    );
+    $this->pageTitle=Yii::app()->name . ' — ' . $title;
+    $this->breadcrumbs=array($title);
     if (Yii::app()->user->hasFlash('browsing')):
 ?>
 
@@ -10,10 +8,7 @@
     <?php echo Yii::app()->user->getFlash('browsing'); ?>
 </div>
 <?php else: ?>
-
-<h1>Личный кабинет</h1>
-
-<p>Сейчас вы просматриваете <?php Article::getNameStatus($model['status']) ?> статьи</p>
+<h3><?php Article::getNameStatus($model['status']) ?></h3>
 
 <?php
 

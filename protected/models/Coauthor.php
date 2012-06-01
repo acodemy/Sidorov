@@ -92,4 +92,9 @@ class Coauthor extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+    public function getFullName () {
+        $mn = (!empty($this->middle_name)) ? mb_substr($this->middle_name, 0, 2) . '.' : '';
+        return $this->last_name . ' ' . mb_substr($this->first_name, 0, 2) . '. ' . $mn;
+    }
 }

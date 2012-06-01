@@ -4,21 +4,27 @@ class SecretaryController extends Controller
 {
 	public function actionIndex()
 	{
-        /*if(Yii::app()->user->checkAccess('secretary'))
-        {*/
-		$dataProvider=new CActiveDataProvider('Article', array(
+        /**
+         * Название раздела
+         */
+        $this->title = 'Статьи на проверке';
+
+        $access = Yii::app()->user->checkAccess('viewAllArticles');
+
+        if($access) {
+		$dataProvider = new CActiveDataProvider('Article', array(
                 'criteria' => array(
-                    'condition'=>'status<=' . Article::UNDER_REVISION
+                    'condition'=>'status=' . Article::UNDER_REVISION
                 ),
 
             )
         );
         $this->render('index', array('dataProvider' => $dataProvider));
-       /* } else
+        } else
         {
             Yii::app()->user->setFlash('index','У вас нет прав доступа к этой странице.');
             $this->render('index');
-        }*/
+        }
 	}
 
 
@@ -58,7 +64,7 @@ class SecretaryController extends Controller
                 'dataProvider' => $dataProvider,
                 'dataProvider2' => $dataProvider2,
                 'users' => $allUsers,
-                'article' => Article::model()->findByPk($_GET['id'])->status
+                'article' => Article::model()->findByPk($_GET['id'])
                 )
             );
        /* } else {

@@ -1,74 +1,44 @@
 <?php
-$this->breadcrumbs=array(
-	'Secretary'=>array('/secretary'),
-	'Article',
-);?>
-<h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
-
-<p>
-    <?php
-
-
-    if(Yii::app()->user->hasFlash('article')):
-    ?>
-
-    <div class="flash-success">
-        <?php echo Yii::app()->user->getFlash('article'); ?>
-    </div>
-    <?php else:
-
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider'=>$dataProvider,
-        'columns'=>array(
-            array(
-                'name' => 'title',
-                'type'=>'raw',
-                'value'=>'CHtml::link(CHtml::encode($data->title), "index.php?r=secretary/article"."&id=".$data->id)',
-                ),
-            'description',
-            'comment',
-            array(
-                'name' => 'section_id',
-                'type' => 'raw',
-                'value' => 'Section::model()->findByPk($data->section_id)->name;'
-            ),
-            array(
-                'name' => 'status',
-                'type' => 'raw',
-                'value' => 'Article::getNameStatus($data->status)'
-            ),
-            array(
-                'name' => 'Files',
-                'type' => 'raw',
-                'value' => 'CHtml::button("Скачать")'
-                ),
-            array(
-                'class' => 'ButtomApprove',
-                'buttons' => array(
-                    'delete' => array(
-                        'imageUrl' => '/images/disapprove.png',
-                        'url' => 'Yii::app()->controller->createUrl("article/decline", array("id" => $data->primaryKey))',
-                    ),
-                ),
-                'template' => '{delete}'
-                ),
-            array(
-                'class' => 'ButtomProve',
-                'buttons' => array(
-                    'delete' => array(
-                        'imageUrl' => '/images/approve.png',
-                        'url' => 'Yii::app()->controller->createUrl("article/toprint", array("id" => $data->primaryKey))',
-                    ),
-                ),
-                'template' => '{delete}'
-            ),
-            )
-         )
-
+    $this->breadcrumbs=array(
+        'Secretary'=>array('/secretary'),
+        'Article',
     );
-    if ($article > Article::REJECTED )
+?>
+
+
+
+    <div class="rows">
+        <dl class="dl-horizontal" style='text-overflow: clip;'>
+            <dt><?php echo $article->getAttributeLabel('title');?></dt>
+            <dd><?php echo $article->title; ?></dd>
+
+            <dt><?php echo $article->getAttributeLabel('description');?></dt>
+            <dd><?php echo $article->description; ?></dd>
+
+            <dt>Авторы</dt>
+            <dd><?php echo $article->author->getFullName(); ?></dd>
+            <?php
+            if ($article->coauthorsCount) {
+                $coauthors = $article->coauthors;
+                foreach ($coauthors as $coauthor) {
+                    echo "<dd>{$coauthor->getFullName()}</dd>\n";
+                }
+            }
+            ?>
+
+            <?php if (!empty($article->comment)) : ?>
+            <dt><?php echo $article->getAttributeLabel('comment');?></dt>
+            <dd><?php echo $article->comment; ?></dd>
+            <?php endif; ?>
+        </dl>
+    </div>
+    <?php echo CHtml::link('<i class="icon-download-alt"></i> Скачать для просмотра', $article->getArchiveLink(), array('class' => 'btn btn-info')); ?>
+    <hr />
+    <div class="form">
+<?php
+
+    if ($article->status > Article::REJECTED )
     {
-    echo '<p>Рецензии:</p>';
     $form=$this->beginWidget('CActiveForm', array(
         'id'=>'revisions-form',
         'enableClientValidation'=>true,
@@ -76,14 +46,17 @@ $this->breadcrumbs=array(
             'validateOnSubmit'=>true,
         ),
     ));
-    ?>
-    <div class="row">
-    <?php echo $form->label($model,'Add reviewer: '); ?>
+
+?>
+
+    <div class="rows">
+        Выберите рецензента
+    <?php echo $form->label($model,''); ?>
     <?php echo $form->dropDownList($model,'login',$users);?>
     <?php echo $form->error($model,'login'); ?>
     </div>
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Add'); ?>
+    <div class="rows buttons">
+        <?php echo CHtml::submitButton('Добавить рецензента', array('class' => 'btn btn-primary')); ?>
     </div>
 
     </div>
@@ -116,36 +89,25 @@ $this->breadcrumbs=array(
                     'delete' => array(
                         'url' => 'Yii::app()->controller->createUrl("reviewer/delete", array("id" => $data->primaryKey))',
                     ),
+                    'prove' => array(
+                        'label' => 'prove',
+                        'url' => 'Yii::app()->controller->createUrl("reviewer/approve", array("id" => $data->primaryKey))',
+                    ),// icon-thumbs-up
+                    'approve' => array(
+                        'label' => 'approve',
+                        'url' => 'Yii::app()->controller->createUrl("reviewer/disapprove", array("id" => $data->primaryKey))',
+                    ),// icon-thumbs-up
                 ),
-                'template' => '{delete}'
-                ),
-                array(
-                    'class' => 'ButtomProve',
-                    'buttons' => array(
-                        'delete' => array(
-                            'imageUrl' => '/images/approve.png',
-                            'url' => 'Yii::app()->controller->createUrl("reviewer/approve", array("id" => $data->primaryKey))',
-                        ),
-                 ),
-                    'template' => '{delete}'
-                ),
-                array(
-                    'class' => 'ButtomApprove',
-                    'buttons' => array(
-                        'delete' => array(
-                            'imageUrl' => '/images/disapprove.png',
-                            'url' => 'Yii::app()->controller->createUrl("reviewer/disapprove", array("id" => $data->primaryKey))',
 
-                        ),
-                    ),
-                    'template' => '{delete}'
+                'template' => '{delete} {prove} {approve}'
                 ),
-            )
+            ),
+            'htmlOptions' => array(
+                'class' => 'table table-striped'
+            ),
 
        )
     );
+
     }
      ?>
-
-</p>
-    <?php endif ?>

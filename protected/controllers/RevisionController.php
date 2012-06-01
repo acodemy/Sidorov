@@ -3,12 +3,16 @@
 class RevisionController extends Controller
 {
 	public function actionAdd() {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Добавление рецензии';
 
-        $revision = Revision::model()->findByPk($_GET['id']);//$this->loadModel($_GET['id'], 'Revision');
-        $isNotGuest = true; //Yii::app()->user->checkAccess('changeArticle', array('article_id' => $_GET['id']));
+        $revision = $this->loadModel($_GET['id']);
+        $access = Yii::app()->user->checkAccess('addRevision', array('revision' => $revision));
 
 
-        if($isNotGuest) {
+        if($access) {
             if (isset($_POST['Revision']) && !empty($_FILES)) {
                 $filesPath = Article::model()->findByPk($revision->article_id)->getDirectoryPath();
                 $revision->attributes = $_POST['Revision'];
@@ -27,7 +31,7 @@ class RevisionController extends Controller
                     }
                 }
             }
-            $this->render('add', array('model' => $revision));
+            $this->render('add', array('revision' => $revision));
         } else {
             Yii::app()->user->setFlash('browsing','У вас нет доступа к данным.');
             $this->render('browsing');
@@ -36,7 +40,13 @@ class RevisionController extends Controller
 
 
 
+    public function loadModel($id) {
+        $model = Revision::model()->findByPk($id);
+        if ($model === null)
+            throw new CHttpException(404, 'The requested page does not exist.');
 
+        return $model;
+    }
 
 
 	public function actionIndex()

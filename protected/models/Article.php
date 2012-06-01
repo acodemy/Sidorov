@@ -73,11 +73,13 @@ class Article extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user_id' => array(self::BELONGS_TO, 'User', 'id'),
+			'author' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 			'files' => array(self::HAS_MANY, 'FileArticle', 'article_id'),
 			'revisions' => array(self::HAS_MANY, 'Revision', 'article_id'),
             'filesCount' => array(self::STAT, 'FileArticle', 'article_id'),
+            'coauthorsCount' => array(self::STAT, 'Coauthor', 'article_id'),
+            'coauthors' => array(self::HAS_MANY, 'Coauthor', 'article_id')
 		);
 	}
 
@@ -122,6 +124,10 @@ class Article extends CActiveRecord
         return dirname($_SERVER['SCRIPT_FILENAME']) . '/files/' . $this->getDirectoryName() . '/';
     }
 
+    public function getArchiveLink () {
+        return Yii::app()->request->baseUrl . '/files/' . $this->getDirectoryName() . '/' . $this->getDirectoryName() . '.zip';
+    }
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -154,28 +160,28 @@ class Article extends CActiveRecord
     public static function getNameStatus($i) {
         switch ($i) {
             case 1:
-                echo "Отклоненные";
+                echo "Отклоненные статьи";
                 break;
             case 2:
-                echo "Опубликованные";
+                echo "Опубликованные статьи";
                 break;
             case 3:
-                echo "Ожидающие рецензию";
+                echo "Статьи, ожидающие рецензии";
                 break;
             case 4:
-                echo "С недобавленными авторами";
+                echo "Статьи, ожидающие добавления соавторов";
                 break;
             case 5:
-                echo "Ожидающие добавления файлов";
+                echo "Статьи, ожидающие добавления файлов";
                 break;
             case 6:
-                echo "Ожидаюющие камментария";
+                echo "Статьи, ожидаюющие добавления комментария";
                 break;
             case 7:
-                echo "Ожидаюющие отправки";
+                echo "Статьи, ожидаюющие подтверждения";
                 break;
             case 8:
-                echo "На доработке";
+                echo "Статьи на доработке";
                 break;
         }
     }

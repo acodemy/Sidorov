@@ -3,6 +3,11 @@
 class ArticleController extends Controller
 {
     public function actionBrowsing() {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Список статей';
+
         $status = (isset($_GET['status'])) ? (int)$_GET['status'] : 0;
         $uid = Yii::app()->user->id;
         $access =  Yii::app()->user->checkAccess('viewOwnArticles');
@@ -16,7 +21,7 @@ class ArticleController extends Controller
                 ),
             ));
 
-            $this->render('browsing',array('model'=>$model));
+            $this->render('browsing',array('model'=>$model, 'title' => $this->title));
         } else {
             Yii::app()->user->setFlash('browsing','У вас нет доступа к данным.');
             $this->render('browsing');
@@ -54,7 +59,7 @@ class ArticleController extends Controller
                 $article->attributes = $_POST['Article'];
                 if($article->validate()) {
                     $article->user_id = Yii::app()->user->id;
-                    if (isset($article->status)) {
+                    if (!isset($article->status)) {
                         $article->status = Article::COAUTHORS_WAIT;
                     }
                     $article->save();
@@ -97,7 +102,9 @@ class ArticleController extends Controller
                     $coauthor->article_id = $article->id;
                     $coauthor->save();
 
-                    $article->status = Article::FILES_WAIT;
+                    if ($article->status < Article::FILES_WAIT) {
+                        $article->status = Article::FILES_WAIT;
+                    }
                     $article->save();
 
                     $this->redirect($this->createUrl('article/addcoauthors', array('id' => $article->id)));
@@ -197,7 +204,9 @@ class ArticleController extends Controller
             if (isset($_POST['Article'])) {
                 $article->comment = $_POST['Article']['comment'];
                 if($article->validate()) {
-                    $article->status = Article::CONFIRM_WAIT;
+                    if ($article->status < Article::CONFIRM_WAIT) {
+                        $article->status = Article::CONFIRM_WAIT;
+                    }
                     $article->save();
 
                     $this->redirect($this->createUrl('article/confirm', array('id' => $article->id)));
@@ -255,8 +264,9 @@ class ArticleController extends Controller
 
             $this->render('confirm', array('article' => $article));
         } else {
-            Yii::app()->user->setFlash('confirm', 'У вас нет доступа к данным.');
-            $this->render('submit');
+            /*Yii::app()->user->setFlash('confirm', 'У вас нет доступа к данным.');
+            $this->render('confirm');*/
+            throw new CHttpException(404, 'НЕ работает');
         }
     }
 

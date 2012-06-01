@@ -5,6 +5,29 @@
 ?>
 
 <div class="well" style="margin-top:10px; padding: 8px 0;">
+<?php if (Yii::app()->user->checkAccess('secretary')) : ?>
+    <?php
+        $this->widget('zii.widgets.CMenu', array(
+            'items' => array(
+                array('label' => 'Меню секретаря',
+                    'itemOptions' => array(
+                        'class' => 'nav-header',
+                    ),
+                ),
+                array('label' => 'Статьи, ожидающие проверки (' . ($moderate['articles']) . ')',
+                    'url' => array('secretary/index')
+                ),
+                array('label' => 'Рецензии, ожидающие проверки (' . ($moderate['revisions']) . ')',
+                    'url' => array('secretary/revision')
+                ),
+            ),
+            'htmlOptions' => array(
+                'class' => 'nav nav-list',
+            ),
+        ));
+    ?>
+<?php endif; ?>
+
 <?php if (Yii::app()->user->checkAccess('author')) : ?>
 
         <?php
@@ -13,7 +36,10 @@
                 'items'=>array(
                     array(
                         'label' => 'Меню автора',
-                        'itemOptions' => array('class' => 'nav-header'),
+                        'itemOptions' => array(
+                            'class' => 'nav-header',
+                            'style' => 'margin-top:15px;',
+                        ),
                     ),
                     array('label' => '<b>Добавить статью</b>' , 'url' => array('article/submit')),
                     array('label'=>'Отклоненные статьи (' . (isset($model['REJECTED']) ? $model['REJECTED'] : 0) . ')', 'url'=>array('article/browsing', 'status' => 1)),

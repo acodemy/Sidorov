@@ -28,6 +28,12 @@
         .note {
             font-style: italic;
         }
+        .article-data dd {
+            margin-left:170px;
+        }
+        .article-data dt {
+            width:160px;
+        }
     </style>
 </head>
 
