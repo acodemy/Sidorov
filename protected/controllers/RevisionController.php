@@ -33,8 +33,8 @@ class RevisionController extends Controller
             }
             $this->render('add', array('revision' => $revision));
         } else {
-            Yii::app()->user->setFlash('browsing','У вас нет доступа к данным.');
-            $this->render('browsing');
+            Yii::app()->user->setFlash('add','У вас нет доступа к данным.');
+            $this->render('add');
         }
 	}
 

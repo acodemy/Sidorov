@@ -2,7 +2,16 @@
 $this->breadcrumbs=array(
 	'Рецензии'=>array('/revision'),
 	'Добавление',
-);?>
+);
+if(Yii::app()->user->hasFlash('add')):
+?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('add'); ?>
+</div>
+<?php else: ?>
+
+
 <div class="rows">
     <dl class="dl-horizontal" style='text-overflow: clip;'>
         <dt><?php echo $revision->article->getAttributeLabel('title');?></dt>
@@ -59,3 +68,5 @@ $this->breadcrumbs=array(
     <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+
+<?php endif; ?>
