@@ -28,7 +28,7 @@
 
             <?php if (!empty($article->comment)) : ?>
             <dt><?php echo $article->getAttributeLabel('comment');?></dt>
-            <dd><?php echo $article->comment; ?></dd>
+            <dd><?php echo $article->comment;  ?></dd>
             <?php endif; ?>
         </dl>
     </div>
@@ -63,49 +63,67 @@
 
     <?php
     $this->endWidget();
+?>
+
+<?php
+    $ajax = <<<AJAX
+function() {
+    var url = $(this).attr('href');
+    $.post(url, function(response) {
+        $.fn.yiiGridView.update('');
+        alert(response);
+    });
+    return false;
+}
+AJAX;
 
     $this->widget('zii.widgets.grid.CGridView', array(
-            'dataProvider'=>$dataProvider2,
-            'columns'=>array(
+            'dataProvider' => $revisionsDP,
+            'columns' => array(
+                'user.last_name',
                 array(
-                    'name' => 'user_id',
-                    'type' => 'raw',
-                    'value' => 'User::model()->findByPk($data->user_id)->login',
-                    ),
-                'status',
+                    'name' => 'status',
+                    'value' => 'Revision::getStatusName($data->status)'
+                ),
                 array(
                     'name' => 'Files',
                     'type' => 'raw',
                     'value' => '($data->status == 2) ? CHtml::button("Скачать") : "Рецензия ещё не сформирована"'
                 ),
-                array(
-                    'name' => 'is_positive',
-                    'type' => 'raw',
-                    'value' => 'Revisions::getNamePositive($data->is_positive)'
-                ),
+                'comment',
                 array(
                     'class' => 'CButtonColumn',
-                'buttons' => array(
-                    'delete' => array(
-                        'url' => 'Yii::app()->controller->createUrl("reviewer/delete", array("id" => $data->primaryKey))',
-                    ),
-                    'prove' => array(
-                        'label' => 'prove',
-                        'url' => 'Yii::app()->controller->createUrl("reviewer/approve", array("id" => $data->primaryKey))',
-                    ),// icon-thumbs-up
-                    'approve' => array(
-                        'label' => 'approve',
-                        'url' => 'Yii::app()->controller->createUrl("reviewer/disapprove", array("id" => $data->primaryKey))',
-                    ),// icon-thumbs-up
-                ),
+                    'header' => 'Действия',
+                    'buttons' => array(
+                        'delete' => array(
+                            'label' => 'Удалить',
+                            'url' => 'Yii::app()->controller->createUrl("revision/action", array("id" => $data->primaryKey, "action" => "delete"))',
+                        ),
+                        'approve' => array(
+                            'label' => 'Утвердить',
+                            'url' => 'Yii::app()->controller->createUrl("revision/action", array("id" => $data->primaryKey, "action" => "approve"))',
+                            'click' => 'function() {
+    var url = $(this).attr("href");
+    $.post(url, function(response) {
+        $.fn.yiiGridView.update(this);
+        alert(response);
+    });
+    return false;
+}'
+                        ),
+                        'disapprove' => array(
+                            'label' => 'Отвергнуть',
+                            'url' => 'Yii::app()->controller->createUrl("revision/action", array("id" => $data->primaryKey, "action" => "disapprove"))',
 
-                'template' => '{delete} {prove} {approve}'
+                        ),
+                    ),
+                    'deleteConfirmation' => 'Вы уверены, что хотите удалить рецензию? Данное действие будет невозможно отменить!',
+                    'template' => '{approve} {disapprove} | {delete}'
                 ),
             ),
             'htmlOptions' => array(
                 'class' => 'table table-striped'
             ),
-
        )
     );
 

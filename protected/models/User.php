@@ -29,6 +29,8 @@
  */
 class User extends CActiveRecord
 {
+    public $fullname;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -76,7 +78,6 @@ class User extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'articles' => array(self::HAS_MANY, 'Articles', 'user_id'),
-			'usertype' => array(self::BELONGS_TO, 'Usertypes', 'usertype_id'),
 		);
 	}
 
@@ -93,7 +94,7 @@ class User extends CActiveRecord
 			'usertype_id' => 'Usertype',
 			'first_name' => 'First Name',
 			'middle_name' => 'Middle Name',
-			'last_name' => 'Last Name',
+			'last_name' => 'Фамилия',
 			'country' => 'Country',
 			'city' => 'City',
 			'degree' => 'Degree',
@@ -104,6 +105,7 @@ class User extends CActiveRecord
 			'institution' => 'Institution',
 			'department' => 'department',
 			'may_reviewer' => 'May Reviewer',
+            'fullname' => 'Рецензент'
 		);
 	}
 
@@ -152,6 +154,7 @@ class User extends CActiveRecord
 
     public function getFullName () {
         $mn = (!empty($this->middle_name)) ? mb_substr($this->middle_name, 0, 2) . '.' : '';
-        return $this->last_name . ' ' . mb_substr($this->first_name, 0, 2) . '. ' . $mn;
+        $this->fullname =  $this->last_name . ' ' . mb_substr($this->first_name, 0, 2) . '. ' . $mn;
+        return $this->fullname;
     }
 }

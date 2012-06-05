@@ -16,7 +16,6 @@ class SecretaryController extends Controller
                 'criteria' => array(
                     'condition'=>'status=' . Article::UNDER_REVISION
                 ),
-
             )
         );
         $this->render('index', array('dataProvider' => $dataProvider));
@@ -32,6 +31,7 @@ class SecretaryController extends Controller
     {
         /*if (isset($_GET['id']) && Yii::app()->user->checkAccess('secretary'))
         {*/
+            $id = (int)$_GET['id'];
             $revision = new Revisions;
             $users = new User;
             $dataProvider=new CActiveDataProvider('Article', array(
@@ -50,9 +50,11 @@ class SecretaryController extends Controller
                 $revision->save();
             }
 
-            $dataProvider2=new CActiveDataProvider('Revisions', array(
+            $revisionsDP = new CActiveDataProvider('Revision', array(
                     'criteria' => array(
-                        'condition'=>'article_id=' . $_GET['id']
+                        'with' => 'user',
+                        'condition' => 'article_id=' . $id,
+                        'order' => 't.id DESC',
                     ),
                 )
             );
@@ -62,7 +64,7 @@ class SecretaryController extends Controller
             $this->render('article', array(
                 'model' => $users,
                 'dataProvider' => $dataProvider,
-                'dataProvider2' => $dataProvider2,
+                'revisionsDP' => $revisionsDP,
                 'users' => $allUsers,
                 'article' => Article::model()->findByPk($_GET['id'])
                 )

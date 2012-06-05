@@ -19,7 +19,24 @@ class Revision extends CActiveRecord
 {
     const WRITING_WAIT = 1;
     const MODERATE = 2;
-    const CONFIRMED = 3;
+    const APPROVED = 3;
+    const DISAPPROVED = 4;
+
+    const POSITIVE = 5;
+    const NEGATIVE = 6;
+
+    public static function getStatusName ($status) {
+         $statusNames = array (
+            self::WRITING_WAIT => 'Ожидает написания',
+            self::MODERATE => 'На проверке',
+            self::APPROVED => 'Утверждена',
+            self::DISAPPROVED => 'Отвергнута',
+            self::POSITIVE => 'Положительная',
+            self::NEGATIVE => 'Отрицательная',
+        );
+
+        return $statusNames[$status];
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -64,7 +81,6 @@ class Revision extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'filesRevisions' => array(self::HAS_MANY, 'FilesRevisions', 'revision_id'),
             'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'article' => array(self::BELONGS_TO, 'Article', 'article_id'),
             'wait' => array(self::STAT, 'Revision', 'id')
@@ -82,7 +98,7 @@ class Revision extends CActiveRecord
 			'comment' => 'Комментарий для редактора',
 			'status' => 'Статус',
 			'is_positive' => 'Тип',
-            'authorFullName' => 'Автор'
+            'authorFullName' => 'Автор',
 		);
 	}
 

@@ -38,7 +38,30 @@ class RevisionController extends Controller
         }
 	}
 
+    public function actionAction () {
+        if(Yii::app()->request->isPostRequest) {
+            $revision = $this->loadModel($_GET['id']);
+            switch ($_GET['action']) {
+                case 'approve':
+                    $revision->status = Revision::APPROVED;
+                    $revision->save();
+                    break;
+                case 'disapprove':
+                    $revision->status = Revision::DISAPPROVED;
+                    $revision->save();
+                    break;
+                case 'delete':
+                    $revision->delete();
+                    break;
+            }
 
+            if(!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            }
+        } else {
+            throw new CHttpException(400,'Неверный запрос. Пожалуйста, не пытайтесь его повторить.');
+        }
+    }
 
     public function loadModel($id) {
         $model = Revision::model()->findByPk($id);
