@@ -108,4 +108,10 @@ class Revision extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+    public static function getNameStatus($number)
+    {
+        $positive = array(self::WRITING_WAIT =>  'Ожидает написания', self::MODERATE => 'На проверке', self::CONFIRMED => 'Одобрено');
+        return $positive[$number];
+    }
 }

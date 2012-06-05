@@ -73,6 +73,31 @@ class SecretaryController extends Controller
         }*/
     }
 
+    public function actionRevision()
+    {
+        /**
+         * Название раздела
+         */
+        $this->title = 'Рецензии на проверке';
+
+        $access = Yii::app()->user->checkAccess('viewAllRevisions');
+
+        if($access) {
+            $dataProvider = new CActiveDataProvider('Revision', array(
+                    'criteria' => array(
+                        'condition'=>'status=' . Revision::MODERATE
+                    ),
+
+                )
+            );
+            $this->render('revision', array('dataProvider' => $dataProvider));
+        } else
+        {
+            Yii::app()->user->setFlash('revision','У вас нет прав доступа к этой странице.');
+            $this->render('revision');
+        }
+    }
+
 
 	// Uncomment the following methods and override them if needed
 	/*
