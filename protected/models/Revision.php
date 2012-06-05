@@ -127,7 +127,7 @@ class Revision extends CActiveRecord
 
     public static function getNameStatus($number)
     {
-        $positive = array(self::WRITING_WAIT =>  'Ожидает написания', self::MODERATE => 'На проверке', self::CONFIRMED => 'Одобрено');
+        $positive = array(self::WRITING_WAIT =>  'Ожидает написания', self::MODERATE => 'На проверке', self::APPROVED => 'Одобрено', self::DISAPPROVED =>'Не обобрено');
         return $positive[$number];
     }
 }
